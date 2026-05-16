@@ -2,14 +2,15 @@ import axios from 'axios';
 import { BaseOAuthClient, type OAuthConfig } from './base.js';
 import type { OAuthTokens, PlatformCredentials, CloudflareAccount } from '../types/index.js';
 import { logger } from '../cli/utils/logger.js';
+import { envConfig } from '../config/env.js';
 
 const CLOUDFLARE_API = 'https://api.cloudflare.com';
 
 const cloudflareOAuthConfig: OAuthConfig = {
   authorizationUrl: 'https://dash.cloudflare.com/oauth2/auth',
   tokenUrl: 'https://dash.cloudflare.com/oauth2/token',
-  clientId: process.env.CLOUDFLARE_CLIENT_ID || 'oasiswaker-cli',
-  redirectUri: 'http://localhost:3000/callback',
+  clientId: envConfig.CLOUDFLARE_CLIENT_ID || 'oasiswaker-cli',
+  redirectUri: envConfig.CLOUDFLARE_REDIRECT_URI || 'http://localhost:3000/callback',
   scope: 'account:read cloudflare:manage_workers_scripts_edit',
 };
 

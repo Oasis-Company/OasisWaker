@@ -7,8 +7,54 @@ import { deployCommand } from './commands/deploy.js';
 import { statusCommand } from './commands/status.js';
 import { revokeCommand } from './commands/revoke.js';
 import { logger } from './utils/logger.js';
+import { OasisWakerError } from '../errors/index.js';
 
 const program = new Command();
+
+function setupErrorHandlers() {
+  process.on('uncaughtException', (error) => {
+    handleError(error);
+    process.exit(1);
+  });
+
+  process.on('unhandledRejection', (reason) => {
+    handleError(reason);
+    process.exit(1);
+  });
+}
+
+function handleError(error: unknown) {
+  const err = error instanceof Error ? error : new Error(String(error));
+  
+  if (err instanceof OasisWakerError) {
+    logger.error(err.message);
+    if (err.suggestions && err.suggestions.length > 0) {
+      logger.info('Suggestions:');
+      err.suggestions.forEach(suggestion => {
+        logger.info(`  - ${suggestion}`);
+      });
+    }
+    if (err.cause) {
+      logger.debug('Cause:', err.cause);
+    }
+  } else {
+    logger.error('An unexpected error occurred');
+    if (logger.getVerbose()) {
+      logger.error(err);
+    }
+  }
+}
+
+function wrapAsyncAction(fn: (...args: any[]) => Promise<void>) {
+  return async (...args: any[]) => {
+    try {
+      await fn(...args);
+    } catch (error) {
+      handleError(error);
+      process.exit(1);
+    }
+  };
+}
 
 program
   .name('oasiswaker')
@@ -26,40 +72,40 @@ program
   .command('init')
   .description('Initialize OasisWaker configuration')
   .option('-e, --endpoint <url>', 'OasisBio API endpoint URL')
-  .action(async (options) => {
+  .action(wrapAsyncAction(async (options) => {
     await initCommand(options.endpoint);
-  });
+  }));
 
 program
   .command('login')
   .description('Connect a cloud platform (Cloudflare, Vercel, or Supabase)')
   .argument('[platform]', 'Platform to connect (cloudflare, vercel, or supabase)')
-  .action(async (platform) => {
+  .action(wrapAsyncAction(async (platform) => {
     await loginCommand(platform);
-  });
+  }));
 
 program
   .command('deploy')
   .description('Deploy adapters to connected platforms')
   .argument('[platform]', 'Platform to deploy (cloudflare, vercel, or supabase)')
-  .action(async (platform) => {
+  .action(wrapAsyncAction(async (platform) => {
     await deployCommand(platform);
-  });
+  }));
 
 program
   .command('status')
   .description('Display status of connected platforms and deployed adapters')
-  .action(async () => {
+  .action(wrapAsyncAction(async () => {
     await statusCommand();
-  });
+  }));
 
 program
   .command('revoke')
   .description('Revoke access and remove deployed adapters from a platform')
   .argument('[platform]', 'Platform to revoke (cloudflare, vercel, or supabase)')
-  .action(async (platform) => {
+  .action(wrapAsyncAction(async (platform) => {
     await revokeCommand(platform);
-  });
+  }));
 
 program
   .command('help')
@@ -74,6 +120,7 @@ program.on('command:*', () => {
   process.exit(1);
 });
 
+setupErrorHandlers();
 program.parse(process.argv);
 
 const NO_COMMAND_SPECIFIED = program.args.length === 0;

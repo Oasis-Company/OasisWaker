@@ -2,14 +2,15 @@ import axios from 'axios';
 import { BaseOAuthClient, type OAuthConfig } from './base.js';
 import type { OAuthTokens, PlatformCredentials, SupabaseProject } from '../types/index.js';
 import { logger } from '../cli/utils/logger.js';
+import { envConfig } from '../config/env.js';
 
 const SUPABASE_API = 'https://api.supabase.com';
 
 const supabaseOAuthConfig: OAuthConfig = {
   authorizationUrl: 'https://app.supabase.com/authorize',
   tokenUrl: 'https://api.supabase.com/v1/token',
-  clientId: process.env.SUPABASE_CLIENT_ID || 'oasiswaker-cli',
-  redirectUri: 'http://localhost:3000/callback',
+  clientId: envConfig.SUPABASE_CLIENT_ID || 'oasiswaker-cli',
+  redirectUri: envConfig.SUPABASE_REDIRECT_URI || 'http://localhost:3000/callback',
   scope: 'storage admin',
 };
 

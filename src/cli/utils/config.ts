@@ -1,18 +1,51 @@
 import { homedir } from 'os';
 import { join } from 'path';
-import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync } from 'fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync, rmSync, chmodSync } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import { z } from 'zod';
 import type { Config, PlatformCredentials, Platform, Endpoint, ValidatedConfig } from '../../types/index.js';
 import { ConfigSchema } from '../../types/index.js';
+import { encrypt, decrypt, generateMasterKey, isEncryptedData } from '../../crypto/encryption.js';
 
 const CONFIG_DIR = join(homedir(), '.oasiswaker');
 const CONFIG_FILE = join(CONFIG_DIR, 'config.json');
 const CREDENTIALS_DIR = join(CONFIG_DIR, 'credentials');
 const ENDPOINTS_FILE = join(CONFIG_DIR, 'endpoints.json');
+const MASTER_KEY_FILE = join(CONFIG_DIR, '.master-key');
 
 export class ConfigManager {
   private config: ValidatedConfig | null = null;
+  
+  private async getMasterKey(): Promise<string> {
+    if (existsSync(MASTER_KEY_FILE)) {
+      return readFileSync(MASTER_KEY_FILE, 'utf-8');
+    }
+    
+    const masterKey = generateMasterKey();
+    if (!existsSync(CONFIG_DIR)) {
+      mkdirSync(CONFIG_DIR, { recursive: true });
+    }
+    writeFileSync(MASTER_KEY_FILE, masterKey, 'utf-8');
+    try {
+      chmodSync(MASTER_KEY_FILE, 0o600);
+    } catch {
+    }
+    
+    return masterKey;
+  }
+  
+  private async migratePlaintextCredentials(
+    platform: Platform,
+    content: string
+  ): Promise<PlatformCredentials | null> {
+    try {
+      const credentials = JSON.parse(content) as PlatformCredentials;
+      await this.saveCredentials(platform, credentials);
+      return credentials;
+    } catch {
+      return null;
+    }
+  }
 
   async initialize(apiEndpoint?: string): Promise<ValidatedConfig> {
     if (!existsSync(CONFIG_DIR)) {
@@ -96,7 +129,15 @@ export class ConfigManager {
     }
     try {
       const content = readFileSync(credFile, 'utf-8');
-      return JSON.parse(content);
+      
+      if (!isEncryptedData(content)) {
+        const migrated = await this.migratePlaintextCredentials(platform, content);
+        return migrated;
+      }
+      
+      const masterKey = await this.getMasterKey();
+      const decrypted = decrypt(content, masterKey);
+      return JSON.parse(decrypted);
     } catch {
       return null;
     }
@@ -106,8 +147,11 @@ export class ConfigManager {
     if (!existsSync(CREDENTIALS_DIR)) {
       mkdirSync(CREDENTIALS_DIR, { recursive: true });
     }
+    
+    const masterKey = await this.getMasterKey();
+    const encrypted = encrypt(JSON.stringify(credentials), masterKey);
     const credFile = join(CREDENTIALS_DIR, `${platform}.json`);
-    writeFileSync(credFile, JSON.stringify(credentials, null, 2), 'utf-8');
+    writeFileSync(credFile, encrypted, 'utf-8');
   }
 
   async deleteCredentials(platform: Platform): Promise<void> {

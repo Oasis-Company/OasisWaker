@@ -2,14 +2,15 @@ import axios from 'axios';
 import { BaseOAuthClient, type OAuthConfig } from './base.js';
 import type { OAuthTokens, PlatformCredentials, VercelTeam } from '../types/index.js';
 import { logger } from '../cli/utils/logger.js';
+import { envConfig } from '../config/env.js';
 
 const VERCEL_API = 'https://api.vercel.com';
 
 const vercelOAuthConfig: OAuthConfig = {
   authorizationUrl: 'https://vercel.com/oauth/authorize',
   tokenUrl: 'https://api.vercel.com/v2/oauth/access_token',
-  clientId: process.env.VERCEL_CLIENT_ID || 'oasiswaker-cli',
-  redirectUri: 'http://localhost:3000/callback',
+  clientId: envConfig.VERCELL_CLIENT_ID || 'oasiswaker-cli',
+  redirectUri: envConfig.VERCELL_REDIRECT_URI || 'http://localhost:3000/callback',
   scope: 'deployment:read deployment:write edge-function:read edge-function:write',
 };
 
