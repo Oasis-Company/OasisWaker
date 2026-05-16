@@ -11,6 +11,10 @@ class Logger {
     this.verbose = verbose;
   }
 
+  getVerbose(): boolean {
+    return this.verbose;
+  }
+
   debug(message: string, ...args: unknown[]): void {
     if (this.verbose) {
       console.log(chalk.gray(`[DEBUG] ${message}`), ...args);
@@ -95,7 +99,7 @@ class Logger {
     console.log(chalk.bold(text));
   }
 
-  item(label: string, value: string | number | boolean, color: 'green' | 'yellow' | 'red' | 'cyan' | 'blue' = 'white'): void {
+  item(label: string, value: string | number | boolean, color: 'green' | 'yellow' | 'red' | 'cyan' | 'blue' | 'white' = 'white'): void {
     const coloredLabel = chalk.gray(`${label}:`);
     const coloredValue = (chalk as any)[color](String(value));
     console.log(`  ${coloredLabel} ${coloredValue}`);

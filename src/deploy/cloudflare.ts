@@ -37,7 +37,6 @@ export class CloudflareDeployer {
       mkdirSync(tempDir, { recursive: true });
 
       const workerCode = this.generateWorkerCode();
-      writeFileSync(join(tempDir, 'src', 'index.ts'), workerCode);
       mkdirSync(join(tempDir, 'src'), { recursive: true });
       writeFileSync(join(tempDir, 'src', 'index.ts'), workerCode);
 
