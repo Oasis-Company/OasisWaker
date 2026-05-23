@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 300 80" width="300" height="80">
+  <defs>
+    <linearGradient id="textGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00D4AA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0A2540;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Text: OasisWaker -->
+  <text x="150" y="55" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="48" font-weight="700" fill="url(#textGrad)" text-anchor="middle">
+    OasisWaker
+  </text>
+</svg>

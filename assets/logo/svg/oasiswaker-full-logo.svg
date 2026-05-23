@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 600 120" width="600" height="120">
+  <defs>
+    <linearGradient id="textGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#00D4AA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#0A2540;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Icon -->
+  <g transform="translate(10, 10)">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+      <defs>
+        <linearGradient id="sunGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#00D4AA;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#FF6B35;stop-opacity:1" />
+        </linearGradient>
+      </defs>
+      
+      <!-- Background -->
+      <circle cx="50" cy="50" r="45" fill="url(#sunGrad)" opacity="0.1"/>
+      <circle cx="50" cy="50" r="35" fill="url(#sunGrad)" opacity="0.3"/>
+      
+      <!-- Cloud -->
+      <path d="M25 70 Q20 70 17.5 67.5 Q15 65 17.5 62.5 Q15 60 20 60 Q30 50 40 55 Q50 50 55 60 Q60 55 65 60 Q75 60 77.5 67.5 Q80 70 75 70 Z" fill="#0A2540" opacity="0.8"/>
+      
+      <!-- Network Nodes -->
+      <circle cx="50" cy="50" r="4" fill="#00D4AA"/>
+      <circle cx="30" cy="35" r="2" fill="#0A2540"/>
+      <circle cx="70" cy="35" r="2" fill="#0A2540"/>
+      <circle cx="80" cy="50" r="2" fill="#0A2540"/>
+      <circle cx="40" cy="75" r="2" fill="#0A2540"/>
+      <circle cx="70" cy="70" r="2" fill="#0A2540"/>
+      
+      <!-- Sun Rays -->
+      <line x1="50" y1="15" x2="50" y2="8" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"/>
+      <line x1="75" y1="25" x2="80" y2="20" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"/>
+      <line x1="25" y1="25" x2="20" y2="20" stroke="#FF6B35" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+  </g>
+  
+  <!-- Text: Oasis -->
+  <text x="130" y="75" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="56" font-weight="700" fill="#0A2540">
+    Oasis
+  </text>
+  
+  <!-- Text: Waker (Gradient) -->
+  <text x="310" y="75" font-family="Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif" font-size="56" font-weight="700" fill="url(#textGradient)">
+    Waker
+  </text>
+</svg>

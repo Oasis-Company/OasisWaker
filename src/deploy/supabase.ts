@@ -1,3 +1,5 @@
+import { tmpdir } from 'os';
+import { join } from 'path';
 import axios from 'axios';
 import type { DeployResult } from '../types/index.js';
 import { logger } from '../cli/utils/logger.js';
@@ -20,7 +22,7 @@ export class SupabaseDeployer {
   }
 
   async deploy(): Promise<DeployResult> {
-    const tempDir = '/tmp/oasiswaker-supabase';
+    const tempDir = join(tmpdir(), 'oasiswaker-supabase');
 
     try {
       logger.startSpinner('Preparing Supabase Edge Function adapter...');

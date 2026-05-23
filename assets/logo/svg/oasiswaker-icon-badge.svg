@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="sunGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00D4AA;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF6B35;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="cloudGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A2540;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#0A2540;stop-opacity:0.3" />
+    </linearGradient>
+    
+    <!-- Glow Filter -->
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="200" cy="200" r="180" fill="url(#sunGradient)" filter="url(#glow)" />
+  
+  <!-- Cloud Shapes -->
+  <g opacity="0.9">
+    <!-- Left Cloud -->
+    <path d="M100 280 Q90 280 85 275 Q80 270 85 265 Q80 260 90 260 Q100 250 115 255 Q130 250 140 260 Q145 255 150 260 Q160 260 165 270 Q170 275 165 280 Z" fill="white" opacity="0.9"/>
+    
+    <!-- Right Cloud -->
+    <path d="M250 285 Q240 285 235 280 Q230 275 235 270 Q230 265 240 265 Q250 255 265 260 Q280 255 290 265 Q295 260 300 265 Q310 265 315 275 Q320 280 315 285 Z" fill="white" opacity="0.85"/>
+    
+    <!-- Small Cloud Top -->
+    <path d="M150 120 Q145 120 142 117 Q138 114 142 110 Q138 106 145 106 Q155 98 165 102 Q175 98 182 105 Q186 102 190 106 Q198 106 202 114 Q206 118 202 122 Q206 126 200 126 Q195 132 185 128 Q175 132 165 128 Q158 132 150 126 Z" fill="white" opacity="0.95"/>
+  </g>
+  
+  <!-- Network Nodes -->
+  <g fill="#0A2540" opacity="0.6">
+    <!-- Node Connections -->
+    <line x1="200" y1="200" x2="120" y2="140" stroke="#00D4AA" stroke-width="1.5" opacity="0.4"/>
+    <line x1="200" y1="200" x2="280" y2="130" stroke="#00D4AA" stroke-width="1.5" opacity="0.4"/>
+    <line x1="200" y1="200" x2="310" y2="200" stroke="#00D4AA" stroke-width="1.5" opacity="0.4"/>
+    <line x1="200" y1="200" x2="160" y2="300" stroke="#00D4AA" stroke-width="1.5" opacity="0.4"/>
+    <line x1="200" y1="200" x2="270" y2="280" stroke="#00D4AA" stroke-width="1.5" opacity="0.4"/>
+    
+    <!-- Nodes -->
+    <circle cx="200" cy="200" r="12" fill="#0A2540"/>
+    <circle cx="200" cy="200" r="8" fill="#00D4AA"/>
+    
+    <circle cx="120" cy="140" r="6" fill="#0A2540"/>
+    <circle cx="120" cy="140" r="3" fill="#00D4AA"/>
+    
+    <circle cx="280" cy="130" r="6" fill="#0A2540"/>
+    <circle cx="280" cy="130" r="3" fill="#00D4AA"/>
+    
+    <circle cx="310" cy="200" r="6" fill="#0A2540"/>
+    <circle cx="310" cy="200" r="3" fill="#00D4AA"/>
+    
+    <circle cx="160" cy="300" r="6" fill="#0A2540"/>
+    <circle cx="160" cy="300" r="3" fill="#00D4AA"/>
+    
+    <circle cx="270" cy="280" r="6" fill="#0A2540"/>
+    <circle cx="270" cy="280" r="3" fill="#00D4AA"/>
+  </g>
+  
+  <!-- Rising Sun Rays -->
+  <g stroke="url(#sunGradient)" stroke-width="3" stroke-linecap="round" opacity="0.7">
+    <line x1="200" y1="70" x2="200" y2="50"/>
+    <line x1="260" y1="90" x2="275" y2="75"/>
+    <line x1="300" y1="150" x2="320" y2="140"/>
+    <line x1="140" y1="90" x2="125" y2="75"/>
+    <line x1="100" y1="150" x2="80" y2="140"/>
+  </g>
+  
+  <!-- Palm Tree Silhouette (Subtle) -->
+  <g transform="translate(230, 180)" opacity="0.15" fill="#0A2540">
+    <path d="M0 60 Q2 30 5 0 Q-5 20 0 60 M5 0 Q20 -5 25 10 Q10 5 5 0 M5 0 Q-15 -10 -20 5 Q-5 0 5 0 M5 0 Q25 5 30 20 Q10 10 5 0 M5 0 Q-25 10 -30 25 Q-10 10 5 0"/>
+    <path d="M2 60 L3 80 Q5 82 4 60 Z"/>
+  </g>
+</svg>
