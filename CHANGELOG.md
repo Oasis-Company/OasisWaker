@@ -7,12 +7,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### 🆕 v2.0 Preparation (In Progress)
+
+#### Documentation Updates
+- ✅ **README.md** - Updated to v2.0 vision (Universal Infrastructure Kernel)
+- ✅ **DOCUMENTATION.md** - Created comprehensive documentation index
+- ✅ **.trae/archive/** - Created archive folder for old docs
+- ✅ **CODE_CLEANUP.md** - Documented all known code issues from v1.0
+- [ ] Archive old MVP planning documents
+- [ ] Set up monorepo structure
+
+#### Architecture Changes
+- 🔄 **Vision Changed** - From "CLI tool" to "Universal Infrastructure Kernel"
+- 🔄 **New Direction** - P2P decentralized network (not centralized)
+- 🔄 **New Workflow** - Users own their GitHub projects, CLI for maintenance
+
 ### Planned
 - [ ] Multi-account support
 - [ ] More cloud platforms (AWS Lambda, GCP Cloud Functions)
 - [ ] Web dashboard
 - [ ] Advanced health monitoring
 - [ ] Node reputation system
+- [ ] P2P network implementation
 
 ---
 

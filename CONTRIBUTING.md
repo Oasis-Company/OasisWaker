@@ -1,136 +1,136 @@
-# 🤝 如何为 OasisWaker 做出贡献
+# How to Contribute to OasisWaker
 
-感谢您对 OasisWaker 项目的兴趣！我们欢迎所有形式的贡献，无论是报告问题、提交功能请求，还是直接提交代码。
+Thank you for your interest in the OasisWaker project! We welcome all forms of contribution, whether it's reporting issues, submitting feature requests, or directly contributing code.
 
-## 📋 目录
+## Table of Contents
 
-- [行为准则](#行为准则)
-- [入门指南](#入门指南)
-- [开发环境设置](#开发环境设置)
-- [工作流程](#工作流程)
-- [提交规范](#提交规范)
-- [测试规范](#测试规范)
-- [代码审查](#代码审查)
-- [问题反馈](#问题反馈)
-- [功能请求](#功能请求)
-- [许可证](#许可证)
+- [Code of Conduct](#code-of-conduct)
+- [Getting Started](#getting-started)
+- [Setting Up the Development Environment](#setting-up-the-development-environment)
+- [Workflow](#workflow)
+- [Commit Guidelines](#commit-guidelines)
+- [Testing Guidelines](#testing-guidelines)
+- [Code Review](#code-review)
+- [Reporting Issues](#reporting-issues)
+- [Feature Requests](#feature-requests)
+- [License](#license)
 
 ---
 
-## 行为准则
+## Code of Conduct
 
-请阅读我们的 [行为准则](CODE_OF_CONDUCT.md) 并在任何与项目相关的互动中遵守它。
+Please read our [Code of Conduct](CODE_OF_CONDUCT.md) and abide by it in all project-related interactions.
 
-## 入门指南
+## Getting Started
 
-在开始贡献之前，请确保您：
+Before starting to contribute, please make sure you:
 
-1. ✅ 阅读了 [README.md](README.md) 了解项目概述
-2. ✅ 阅读了 [安全架构文档](.trae/specs/oasiswaker-security-architecture/spec.md)
-3. ✅ 熟悉项目的核心概念和架构
-4. ✅ 拥有一个 GitHub 账户
+1. ✅ Have read the [README.md](README.md) to understand the project overview
+2. ✅ Have read the [security architecture docs](.trae/specs/oasiswaker-security-architecture/spec.md)
+3. ✅ Are familiar with the project's core concepts and architecture
+4. ✅ Have a GitHub account
 
-## 开发环境设置
+## Setting Up the Development Environment
 
-### 前置要求
+### Prerequisites
 
 - **Node.js** >= 18.0.0
-- **npm** >= 9.0.0 或 **yarn** >= 1.22.0 或 **pnpm** >= 8.0.0
+- **npm** >= 9.0.0 or **yarn** >= 1.22.0 or **pnpm** >= 8.0.0
 - **Git** >= 2.30.0
 
-### 克隆仓库
+### Clone the Repository
 
 ```bash
 git clone https://github.com/oasisbio/oasiswaker.git
 cd oasiswaker
 ```
 
-### 安装依赖
+### Install Dependencies
 
 ```bash
 npm install
 ```
 
-### 构建项目
+### Build the Project
 
 ```bash
 npm run build
 ```
 
-### 运行测试
+### Run Tests
 
 ```bash
 npm test
 ```
 
-### 监听模式（开发）
+### Watch Mode (Development)
 
 ```bash
 npm run dev
 ```
 
-## 工作流程
+## Workflow
 
-### 1. Fork 仓库
+### 1. Fork the Repository
 
-点击 GitHub 页面右上角的 "Fork" 按钮来创建您自己的仓库副本。
+Click the "Fork" button in the top-right corner of the GitHub page to create your own copy of the repository.
 
-### 2. 克隆您的 Fork
+### 2. Clone Your Fork
 
 ```bash
 git clone https://github.com/YOUR_USERNAME/oasiswaker.git
 cd oasiswaker
 ```
 
-### 3. 添加上游仓库
+### 3. Add the Upstream Repository
 
 ```bash
 git remote add upstream https://github.com/oasisbio/oasiswaker.git
 ```
 
-### 4. 创建分支
+### 4. Create a Branch
 
-始终为每个功能或修复创建一个新分支：
+Always create a new branch for each feature or fix:
 
 ```bash
 git checkout -b feature/your-feature-name
-# 或
+# or
 git checkout -b fix/your-bug-fix
 ```
 
-### 5. 进行更改
+### 5. Make Your Changes
 
-在您的分支上进行开发工作。
+Work on your changes in the branch.
 
-### 6. 保持同步
+### 6. Keep in Sync
 
-在开始工作前和定期地，将您的分支与上游仓库同步：
+Before starting work and regularly during your work, keep your branch in sync with the upstream repository:
 
 ```bash
 git fetch upstream
 git rebase upstream/main
 ```
 
-### 7. 提交更改
+### 7. Commit Your Changes
 
 ```bash
 git add .
 git commit -m "Your descriptive commit message"
 ```
 
-### 8. 推送更改
+### 8. Push Your Changes
 
 ```bash
 git push origin feature/your-feature-name
 ```
 
-### 9. 创建 Pull Request
+### 9. Create a Pull Request
 
-在 GitHub 上打开您的分支并创建 Pull Request 到 `main` 分支。
+Open your branch on GitHub and create a pull request to the `main` branch.
 
-## 提交规范
+## Commit Guidelines
 
-我们遵循 [Conventional Commits](https://www.conventionalcommits.org/) 规范：
+We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification:
 
 ```
 <type>(<scope>): <subject>
@@ -140,29 +140,29 @@ git push origin feature/your-feature-name
 [optional footer]
 ```
 
-### 类型 (type)
+### Type
 
-- `feat`: 新功能
-- `fix`: 错误修复
-- `docs`: 文档更改
-- `style`: 代码格式（不影响功能）
-- `refactor`: 代码重构
-- `perf`: 性能改进
-- `test`: 测试相关
-- `build`: 构建系统或依赖
-- `ci`: CI 配置
-- `chore`: 其他更改
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation changes
+- `style`: Code formatting (does not affect functionality)
+- `refactor`: Code refactoring
+- `perf`: Performance improvements
+- `test`: Testing-related
+- `build`: Build system or dependencies
+- `ci`: CI configuration
+- `chore`: Other changes
 
-### 范围 (scope)
+### Scope
 
-表示更改的模块，例如：
+Indicates the module being changed, for example:
 - `auth`
 - `config`
 - `crypto`
 - `cli`
 - `deploy`
 
-### 示例
+### Examples
 
 ```
 feat(auth): add PKCE support for OAuth flow
@@ -171,30 +171,30 @@ docs(readme): add architecture diagram
 refactor(crypto): improve key generation algorithm
 ```
 
-## 测试规范
+## Testing Guidelines
 
-### 运行测试
+### Running Tests
 
 ```bash
-# 运行所有测试
+# Run all tests
 npm test
 
-# 监听模式（开发时）
+# Watch mode (during development)
 npm run test:watch
 
-# 带覆盖率
+# With coverage
 npm test -- --coverage
 ```
 
-### 编写测试
+### Writing Tests
 
-- 所有新功能必须包含测试
-- 所有 bug 修复必须包含回归测试
-- 使用 [Vitest](https://vitest.dev/) 作为测试框架
-- 测试文件命名：`*.test.ts`
-- 遵循 AAA 模式（Arrange, Act, Assert）
+- All new features must include tests
+- All bug fixes must include regression tests
+- Use [Vitest](https://vitest.dev/) as the testing framework
+- Test file naming: `*.test.ts`
+- Follow AAA pattern (Arrange, Act, Assert)
 
-### 示例
+### Example
 
 ```typescript
 import { describe, it, expect } from 'vitest';
@@ -214,69 +214,69 @@ describe('yourFunction', () => {
 });
 ```
 
-## 代码审查
+## Code Review
 
-### 作为贡献者
+### As a Contributor
 
-- 确保所有测试通过
-- 确保代码符合项目的 linting 规则
-- 清晰地描述您的 Pull Request
-- 响应审查反馈
+- Make sure all tests pass
+- Make sure the code follows the project's linting rules
+- Clearly describe your pull request
+- Respond to review feedback
 
-### 作为审查者
+### As a Reviewer
 
-- 尊重和礼貌
-- 提供建设性的反馈
-- 指出问题而不是指责
-- 帮助贡献者改进代码
+- Be respectful and polite
+- Provide constructive feedback
+- Point out problems rather than blaming
+- Help contributors improve their code
 
-## 问题反馈
+## Reporting Issues
 
-### 报告 Bug
+### Reporting a Bug
 
-在报告 bug 时，请包含：
+When reporting a bug, please include:
 
-1. **清晰的标题和描述**
-2. **复现步骤**（1. 2. 3. ...）
-3. **预期行为 vs 实际行为**
-4. **环境信息**：
-   - Node.js 版本
-   - 操作系统
-   - npm/yarn/pnpm 版本
-5. **相关日志或错误信息**
-6. **可能的解决方案**
+1. **Clear title and description**
+2. **Steps to reproduce** (1, 2, 3, ...)
+3. **Expected behavior vs. actual behavior**
+4. **Environment information**:
+   - Node.js version
+   - Operating system
+   - npm/yarn/pnpm version
+5. **Relevant logs or error messages**
+6. **Possible solutions**
 
-使用 [Bug 报告模板](https://github.com/oasisbio/oasiswaker/issues/new?template=bug_report.md)。
+Use the [Bug Report Template](https://github.com/oasisbio/oasiswaker/issues/new?template=bug_report.md).
 
-## 功能请求
+## Feature Requests
 
-### 提出新功能
+### Proposing a New Feature
 
-在提出功能请求时，请包含：
+When proposing a feature request, please include:
 
-1. **清晰的功能描述**
-2. **使用场景**（谁会用？为什么？）
-3. **预期行为**
-4. **可能的实现方案**（可选）
-5. **替代方案**（如果有）
+1. **Clear feature description**
+2. **Use case** (who will use it? why?)
+3. **Expected behavior**
+4. **Possible implementation approach** (optional)
+5. **Alternative approaches** (if any)
 
-使用 [功能请求模板](https://github.com/oasisbio/oasiswaker/issues/new?template=feature_request.md)。
+Use the [Feature Request Template](https://github.com/oasisbio/oasiswaker/issues/new?template=feature_request.md).
 
-### 实现功能
+### Implementing a Feature
 
-1. 在 GitHub Issues 中查看是否有相关讨论
-2. 在开始实现前创建一个 Issue 或评论表示您将处理它
-3. 遵循本贡献指南中的所有规范
-4. 在 PR 中包含相关的测试和文档
+1. Check if there's an existing discussion in GitHub Issues
+2. Create an issue or comment to let us know you're working on it before you start
+3. Follow all the guidelines in this contributing guide
+4. Include relevant tests and documentation in your PR
 
-## 许可证
+## License
 
-通过为 OasisWaker 做出贡献，您同意将您的代码按照 [MIT 许可证](LICENSE) 的条款进行许可。
+By contributing to OasisWaker, you agree to license your code under the terms of the [MIT License](LICENSE).
 
 ---
 
 <p align="center">
-  <strong>感谢您对 OasisWaker 的支持！</strong>
+  <strong>Thank you for your support of OasisWaker!</strong>
   <br>
   <em>Your cloud, the network. Contribute. Connect. Decentralize.</em>
 </p>

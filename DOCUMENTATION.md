@@ -1,67 +1,139 @@
 # OasisWaker Documentation Index
 
-Welcome to OasisWaker! This document will help you find everything you need quickly.
+Welcome! This is your guide to all OasisWaker documentation.
 
 ---
 
-## 📑 Table of Contents
+## 🎯 Quick Navigation
 
-### Quick Start
-- [README.md](README.md) - If you're new here, start here!
+### For Everyone
+- **[README.md](README.md)** ← Start here! Updated for v2.0 vision
+- **New to the project?** Read [NEW_ARCHITECTURE.md](NEW_ARCHITECTURE.md) to understand the vision
 
-### Architecture & Design (v2.0 Vision)
-- [NEW_ARCHITECTURE.md](NEW_ARCHITECTURE.md) - The vision for v2.0 universal infrastructure kernel
-- [MIGRATION_PLAN.md](MIGRATION_PLAN.md) - Step-by-step plan to get to v2.0
+### For Contributors
+- **[CONTRIBUTING.md](CONTRIBUTING.md)** - How to contribute
+- **[CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md)** - Community guidelines
+- **[.trae/specs/project-preparation-phase/](.trae/specs/project-preparation-phase/)** - Current work
 
-### Legacy v1.0.0
-- [LEGACY.md](LEGACY.md) - Info about the v1.0.0 archive
-- [CRITIQUE.md](CRITIQUE.md) - What we learned from v1.0.0 (the problems to avoid)
-
-### Current Project Status
-- [PROJECT_STATUS.md](PROJECT_STATUS.md) - Where we are today
-- [PROJECT_RUNNABILITY.md](PROJECT_RUNNABILITY.md) - Can you run this right now?
-
-### Planning & Specs
-- [.trae/specs/](.trae/specs/) - All formal specification documents
-- [.trae/specs/project-preparation-phase/](.trae/specs/project-preparation-phase/) - Current phase spec
-
-### Design Assets
-- [.trae/design/LOGO-DESIGN-SPECIFICATION.md](.trae/design/LOGO-DESIGN-SPECIFICATION.md) - Brand and logo design
-- [assets/logo/](assets/logo/) - SVG logo files
-
-### Archived Planning (v1.0 era)
-- [.trae/premortem/](.trae/premortem/) - Premortem analysis
-- [.trae/documents/](.trae/documents/) - Old MVP planning
-- [.trae/docs/](.trae/docs/) - More old documentation
-- [.trae/archive/](.trae/archive/) - Archived docs will go here
+### For Maintainers
+- **[MIGRATION_PLAN.md](MIGRATION_PLAN.md)** - v2.0 migration roadmap
+- **[.trae/specs/](.trae/specs/)** - All formal specifications
 
 ---
 
-## 🚀 For New Contributors
+## 📚 Documentation by Category
 
-### Where to Start
-1. Read [README.md](README.md) first
-2. Understand the new vision in [NEW_ARCHITECTURE.md](NEW_ARCHITECTURE.md)
-3. Check current tasks in [.trae/specs/](.trae/specs/)
+### 🆕 New Vision (v2.0)
+These documents define the future of OasisWaker:
 
-### Key Directories
-- `.trae/specs/` - Active specification documents
-- `legacy/` (coming soon) - Archived v1.0.0 code
-- `packages/` (coming soon) - New v2.0 monorepo packages
+| Document | Purpose |
+|----------|---------|
+| [README.md](README.md) | Project overview, updated for v2.0 |
+| [NEW_ARCHITECTURE.md](NEW_ARCHITECTURE.md) | The vision: Universal Infrastructure Kernel |
+| [MIGRATION_PLAN.md](MIGRATION_PLAN.md) | How to get from v1.0 to v2.0 |
+| [MIGRATION_PLAN.md](MIGRATION_PLAN.md) | Phased approach (5 phases, 2.5-3 months) |
+
+### 📖 Learning from v1.0
+Important lessons from our first attempt:
+
+| Document | Purpose |
+|----------|---------|
+| [LEGACY.md](LEGACY.md) | What v1.0.0 was (archived) |
+| [CRITIQUE.md](CRITIQUE.md) | Critical review - what went wrong |
+| [.trae/archive/CODE_CLEANUP.md](.trae/archive/CODE_CLEANUP.md) | Known code issues to avoid |
+
+### 📋 Current Work
+Active specifications and planning:
+
+| Document | Purpose |
+|----------|---------|
+| [.trae/specs/project-preparation-phase/](.trae/specs/project-preparation-phase/) | **Current phase** - Project cleanup |
+| [.trae/specs/project-preparation-phase/spec.md](.trae/specs/project-preparation-phase/spec.md) | Phase spec (PRD) |
+| [.trae/specs/project-preparation-phase/tasks.md](.trae/specs/project-preparation-phase/tasks.md) | Task breakdown |
+| [.trae/specs/project-preparation-phase/checklist.md](.trae/specs/project-preparation-phase/checklist.md) | Verification checklist |
+
+### 🗃️ Archived Documentation (v1.0 era)
+Old documents from v1.0 development:
+
+| Document | Purpose |
+|----------|---------|
+| [.trae/archive/README.md](.trae/archive/README.md) | Archive overview |
+| [.trae/documents/](.trae/documents/) | Old MVP planning |
+| [.trae/docs/](.trae/docs/) | Old architecture docs |
+| [.trae/premortem/](.trae/premortem/) | Old risk analysis |
+| [.trae/specs/oasiswaker-cli/](.trae/specs/oasiswaker-cli/) | Old CLI spec |
+| [.trae/specs/oasiswaker-security-architecture/](.trae/specs/oasiswaker-security-architecture/) | Old security spec |
+
+### 🎨 Design & Assets
+Brand and visual design:
+
+| Document | Purpose |
+|----------|---------|
+| [.trae/design/LOGO-DESIGN-SPECIFICATION.md](.trae/design/LOGO-DESIGN-SPECIFICATION.md) | Logo and brand guide |
+| [assets/logo/](assets/logo/) | SVG logo files |
+
+### 📊 Project Status
+Current project state:
+
+| Document | Purpose |
+|----------|---------|
+| [PROJECT_STATUS.md](PROJECT_STATUS.md) | Overall project status |
+| [PROJECT_RUNNABILITY.md](PROJECT_RUNNABILITY.md) | Can you run the code? |
+| [CHANGELOG.md](CHANGELOG.md) | Version history |
+
+### 📜 Templates & Guidelines
+For contributing:
+
+| Document | Purpose |
+|----------|---------|
+| [CONTRIBUTING.md](CONTRIBUTING.md) | How to contribute |
+| [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) | Community guidelines |
+| [LICENSE](LICENSE) | MIT License |
 
 ---
 
-## 📅 Current Work
+## 🔍 Quick Start for New Contributors
 
-**Phase 0**: Project Preparation (in progress)
-  - Cleaning up documentation
-  - Archiving v1.0.0
-  - Setting up for v2.0 monorepo
+### Step 1: Understand the Vision
+1. Read [README.md](README.md)
+2. Read [NEW_ARCHITECTURE.md](NEW_ARCHITECTURE.md)
 
-See [.trae/specs/project-preparation-phase/](.trae/specs/project-preparation-phase/) for current spec.
+### Step 2: See What We're Doing Now
+1. Check [.trae/specs/project-preparation-phase/](.trae/specs/project-preparation-phase/)
+2. Read the [tasks.md](.trae/specs/project-preparation-phase/tasks.md)
+
+### Step 3: Learn from Mistakes
+1. Read [CRITIQUE.md](CRITIQUE.md)
+2. See [.trae/archive/CODE_CLEANUP.md](.trae/archive/CODE_CLEANUP.md)
+
+### Step 4: Start Contributing
+1. Read [CONTRIBUTING.md](CONTRIBUTING.md)
+2. Pick a task from the current phase
 
 ---
 
-## 🆘 Need Help?
+## 📅 Current Phase
 
-Check the issues or reach out to the team!
+**Phase 0: Project Preparation** (In Progress)
+- ✅ Create documentation index
+- [ ] Organize and archive old docs
+- [ ] Clean up codebase structure
+- [ ] Set up monorepo skeleton
+
+See [.trae/specs/project-preparation-phase/](.trae/specs/project-preparation-phase/) for details.
+
+---
+
+## 🔗 External Links
+
+- [npm package](https://www.npmjs.com/package/@oasisbio/oasiswaker)
+- [GitHub Issues](https://github.com/oasisbio/oasiswaker/issues)
+- [Discord Community](https://discord.gg/oasisbio)
+
+---
+
+## 📝 Need Help?
+
+1. Check this index first
+2. Look in relevant category above
+3. Ask in Discord or open a GitHub issue

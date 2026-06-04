@@ -1,104 +1,104 @@
-# 📜 行为准则
+# Code of Conduct
 
-## 我们的承诺
+## Our Pledge
 
-作为 OasisBio 社区的一员，我们致力于为每个人提供一个安全、友好、包容的贡献环境，无论年龄、身体大小、能力、经验水平、教育程度、社会经济地位、国籍、个人外貌、种族、宗教或性认同和性取向如何。
+As members of the OasisBio community, we are committed to providing a safe, welcoming, and inclusive environment for everyone to contribute, regardless of age, body size, disability, experience level, education, socioeconomic status, nationality, physical appearance, race, religion, or gender identity and sexual orientation.
 
-我们承诺，以开放、热情和尊重的态度对待所有社区成员，并坚决反对任何形式的歧视、骚扰和不当行为。
+We promise to interact in an open, friendly, and respectful manner, and to stand against any form of discrimination, harassment, or inappropriate behavior.
 
-## 我们的标准
+## Our Standards
 
-### 积极行为示例
+### Examples of Positive Behavior
 
-✅ **友好和尊重**：使用热情和包容的语言，尊重不同的意见和观点。
+✅ **Friendly and respectful communication**: Using welcoming and inclusive language, and respecting different opinions and viewpoints.
 
-✅ **建设性反馈**：提供或接受建设性的反馈，并以开放的心态接受批评。
+✅ **Constructive feedback**: Giving and receiving constructive feedback, and accepting criticism with an open mind.
 
-✅ **承认错误**：当我们犯错时，我们会承认它，向受影响的人道歉，并从中吸取教训。
+✅ **Taking responsibility**: Admitting mistakes when we make them, apologizing to those affected, and learning from the experience.
 
-✅ **关注社区最佳利益**：优先考虑对社区最有利的事情，而不是对个人最有利的事情。
+✅ **Community first**: Prioritizing what is best for the community, rather than what benefits an individual.
 
-✅ **展示同理心**：理解并尊重其他社区成员的经历和观点。
+✅ **Empathy**: Understanding and respecting the experiences and perspectives of other community members.
 
-### 不可接受的行为示例
+### Examples of Unacceptable Behavior
 
-❌ **人身攻击**：任何形式的个人攻击，特别是基于个人特征的攻击。
+❌ **Personal attacks**: Any form of personal attack, especially those based on individual characteristics.
 
-❌ **歧视和骚扰**：基于年龄、身体大小、能力、经验水平、教育程度、社会经济地位、国籍、个人外貌、种族、宗教或性认同和性取向的歧视或骚扰。
+❌ **Discrimination and harassment**: Discrimination or harassment based on age, body size, disability, experience level, education, socioeconomic status, nationality, physical appearance, race, religion, or gender identity and sexual orientation.
 
-❌ **公开或私下的骚扰**：包括但不限于威胁、恐吓、跟踪、持续的不请自来的交流。
+❌ **Public or private harassment**: Including but not limited to threats, intimidation, stalking, or continued unsolicited communication.
 
-❌ **未经同意的披露**：未经他人明确同意，披露他人的私人信息（如家庭住址、邮箱等）。
+❌ **Unauthorized disclosure**: Disclosing someone else's private information, such as home address or email, without their explicit consent.
 
-❌ **不当的性暗示或图像**：在任何社区相关的场合使用性化的语言、图像或任何性内容。
+❌ **Inappropriate sexual content or imagery**: Using sexualized language, imagery, or any sexual content in community-related spaces.
 
-❌ **破坏性行为**：故意破坏或干扰社区活动、会议、讨论或沟通。
+❌ **Disruptive behavior**: Intentionally disrupting or interfering with community activities, meetings, discussions, or communication.
 
-❌ **商业行为**：未经许可，在社区中进行商业广告或推销。
+❌ **Commercial activity**: Conducting commercial advertising or promotion in the community without permission.
 
-## 执法责任
+## Enforcement Responsibilities
 
-社区领袖有责任澄清和执行本行为准则的可接受标准，并将在适当情况下对任何他们认为不合适、威胁、冒犯或有害的行为采取纠正措施。
+Community leaders are responsible for clarifying and enforcing our standards of acceptable behavior, and will take appropriate corrective action for any behavior they deem inappropriate, threatening, offensive, or harmful.
 
-社区领袖有权删除、编辑或拒绝不符合本行为准则的评论、提交、代码、wiki 编辑、问题和其他贡献，并将在必要时说明做出决定的理由。
+Community leaders have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that do not align with this Code of Conduct, and will explain their decisions when necessary.
 
-## 执法程序
+## Enforcement Procedures
 
-如果社区成员报告了不当行为，社区领袖将审查所有相关投诉，并采取他们认为对情况适当的行动。响应时间不超过 48 小时。社区领袖有义务对事件的相关信息保密。
+If a community member reports inappropriate behavior, community leaders will review all relevant complaints and take appropriate action. Response time will not exceed 48 hours. Community leaders are obligated to keep information about incidents confidential.
 
-具体执法步骤：
+Specific enforcement steps:
 
-1. **初步接触**：社区领袖将与被指控的违规者私下联系，了解情况。
+1. **Initial contact**: Community leaders will privately reach out to the accused violator to understand the situation.
 
-2. **调查**：必要时进行调查，收集相关证据。
+2. **Investigation**: Conduct an investigation if necessary, collecting relevant evidence.
 
-3. **沟通决定**：向被指控的违规者通报调查结果和任何拟采取的行动。
+3. **Communicate decision**: Inform the accused violator of the investigation results and any proposed actions.
 
-4. **执行**：根据违规的严重程度，执行以下一项或多项措施：
-   - 口头或书面警告
-   - 暂时禁止参与社区活动
-   - 永久禁止参与社区活动
-   - 向相关当局报告（如有必要）
+4. **Enforce**: Depending on the severity of the violation, implement one or more of the following measures:
+   - Verbal or written warning
+   - Temporary ban from community activities
+   - Permanent ban from community activities
+   - Report to relevant authorities if necessary
 
-5. **上诉**：被禁止的社区成员可以向社区领导层提出上诉。
+5. **Appeal**: Banned community members may appeal to community leadership.
 
-## 适用范围
+## Scope
 
-本行为准则适用于所有社区空间，包括：
-- GitHub 仓库和 Pull Request
-- GitHub Issues 和讨论
-- Discord 服务器
-- 线下聚会和活动
-- 一对一通信（如果这些通信与社区活动相关）
+This Code of Conduct applies to all community spaces, including:
+- GitHub repositories and pull requests
+- GitHub issues and discussions
+- Discord servers
+- In-person meetings and events
+- One-on-one communications when related to community activities
 
-## 执法联系
+## Enforcement Contact
 
-如果您目睹或经历任何不当行为，请通过以下方式联系我们：
+If you witness or experience any inappropriate behavior, please contact us at:
 
-- **GitHub Issues**: [报告问题](https://github.com/oasisbio/oasiswaker/issues/new/choose)
-- **Discord**: 联系社区管理员
-- **邮箱**: support@oasisbio.com
+- **GitHub Issues**: [Report an issue](https://github.com/oasisbio/oasiswaker/issues/new/choose)
+- **Discord**: Contact community administrators
+- **Email**: support@oasisbio.com
 
-所有投诉都将被认真对待和及时处理。
+All complaints will be taken seriously and handled promptly.
 
-## 执法原则
+## Enforcement Principles
 
-在执行本行为准则时，社区领袖应遵循以下原则：
+When enforcing this Code of Conduct, community leaders should follow these principles:
 
-1. **保护优先**：优先保护受害者的安全和尊严。
-2. **公平公正**：对所有相关方公平，不偏袒任何一方。
-3. **及时响应**：尽快采取行动，防止伤害扩大。
-4. **保密原则**：对所有投诉和调查信息保密。
-5. **透明公开**：公开本行为准则和执法程序。
+1. **Safety first**: Prioritize the safety and dignity of victims.
+2. **Fairness and impartiality**: Be fair to all parties involved, without favoritism.
+3. **Timely response**: Take action promptly to prevent harm from escalating.
+4. **Confidentiality**: Keep all complaints and investigation information confidential.
+5. **Transparency**: Be transparent about this Code of Conduct and enforcement procedures.
 
-## 感谢
+## Acknowledgments
 
-本行为准则改编自 [Contributor Covenant](https://www.contributor-covenant.org/)，版本 2.1。
+This Code of Conduct is adapted from the [Contributor Covenant](https://www.contributor-covenant.org/), version 2.1.
 
 ---
 
 <p align="center">
-  <strong>让我们一起建设一个友好、包容的社区！</strong>
+  <strong>Let's build a friendly, inclusive community together!</strong>
   <br>
   <em>Your cloud, the network. Contribute. Connect. Decentralize.</em>
 </p>
