@@ -1,192 +1,166 @@
 # 🌴 OasisWaker
 
-### *Universal Infrastructure Kernel for Decentralized Networks*
+### *Crowdsourced Edge Infrastructure*
 
-[![npm version](https://img.shields.io/npm/v/@oasisbio/oasiswaker.svg)](https://www.npmjs.com/package/@oasisbio/oasiswaker)
 [![Node.js version](https://img.shields.io/node/v/@oasisbio/oasiswaker.svg)](https://nodejs.org/)
-[![License](https://img.shields.io/github/license/oasisbio/oasiswaker.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue.svg)](https://www.typescriptlang.org/)
-[![Build Status](https://img.shields.io/github/actions/workflow/status/oasisbio/oasiswaker/ci.yml.svg)](https://github.com/oasisbio/oasiswaker/actions)
-[![Join OasisBio Discord](https://img.shields.io/badge/Discord-Join-7289da.svg?logo=discord)](https://discord.gg/oasisbio)
+[![License](https://img.shields.io/github/license/Oasis-Company/OasisWaker.svg)](LICENSE)
+[![Build Status](https://img.shields.io/github/actions/workflow/status/Oasis-Company/OasisWaker/ci.yml.svg)](https://github.com/Oasis-Company/OasisWaker/actions)
+[![GitHub stars](https://img.shields.io/github/stars/Oasis-Company/OasisWaker?style=social)](https://github.com/Oasis-Company/OasisWaker)
 
 ---
 
-## 🎯 Vision
+## What is OasisWaker?
 
-**OasisWaker v2.0** is a **universal infrastructure kernel** that transforms any project into a node in a decentralized P2P network.
+OasisWaker is a CLI tool that lets you contribute your cloud platform's free-tier quota (Cloudflare Workers, Vercel Edge, Supabase Edge) into a shared decentralized storage network.
 
-> *"Your project, the network. Build. Deploy. Connect."*
+**Current status (v1.0):** A working CLI tool with centralized coordination.  
+**Next goal (v2.0):** A true P2P mesh network where nodes discover each other without a central server.
 
-### Core Principles
-
-- ✅ **True Decentralization** - P2P nodes, no central coordinator
-- ✅ **User Ownership** - You own your code, your node, your infrastructure
-- ✅ **Universal** - Not limited to OasisBio, works with any decentralized network
-- ✅ **GitHub-Native** - Deploy via GitHub, maintain via CLI
+> *"Your free-tier cloud quota, aggregated into infrastructure that no single company controls."*
 
 ---
 
-## 🚀 What's New in v2.0
+## v1.0 — Current Release
 
-**Different from v1.0:**
-- v1.0: CLI tool that deploys nodes → Centralized coordination
-- v2.0: Kernel you install in your project → True P2P network
+A Node.js CLI tool (`@oasisbio/oasiswaker`) that:
 
-### Key Changes
+- Generates a unique node identity (`oasiswaker init`)
+- Connects your Cloudflare/Vercel/Supabase account via OAuth2.0 PKCE (`oasiswaker login`)
+- Deploys an edge Worker to your account that exposes a unified block storage API (`oasiswaker deploy`)
+- Reports node health/metrics to a central coordinator (`oasiswaker status`)
+- Securely stores credentials with AES-256-GCM encryption
 
-| Aspect | v1.0 (Legacy) | v2.0 (New) |
-|--------|---------------|-------------|
-| **Deployment** | One-time CLI deploy | Your project on GitHub |
-| **Network** | Centralized via OasisBio | True P2P |
-| **Ownership** | Limited user control | Complete user ownership |
-| **Scalability** | Limited | Unlimited |
+```
+$ oasiswaker init
+$ oasiswaker login --cloudflare
+$ oasiswaker deploy --platform cloudflare
+✓ Deployed. Your node is live at: https://oasis-<nodeId>.workers.dev
+```
+
+**Limitations (known, documented in [CRITIQUE.md](CRITIQUE.md)):**
+- Centralized coordination (OasisBio server is the single point of failure)
+- Hardcoded secrets in Worker template (being fixed in Phase 0)
+- No P2P node discovery yet (planned for v2.0)
+- Test coverage is low
 
 ---
 
-## 📦 Quick Start (v2.0)
+## v2.0 — Vision (Not Yet Implemented)
 
-### For New Projects
+We are working toward a true decentralized mesh:
+
+```
+Browser
+   │
+   ▼
+DHT (Kademlia) ← peer discovery
+   │
+   ├── Cloudflare Worker → R2 Storage
+   ├── Vercel Edge     → Blob Storage
+   └── Supabase Edge   → Storage Bucket
+```
+
+Key goals:
+- **P2P node discovery** via DHT (no central directory)
+- **Erasure coding** — data survives node failures
+- **Client-side encryption** — node operators cannot read stored data
+- **Incentive layer** — contribute resources, earn credits
+
+This is the [VISION.md](VISION.md). It is not built yet. See [PLAN.md](PLAN.md) for the roadmap.
+
+---
+
+## Quick Start (v1.0)
 
 ```bash
-# 1. Install CLI
-npm install -g @oasiswaker/cli
+# Clone the repo
+git clone https://github.com/Oasis-Company/OasisWaker.git
+cd OasisWaker
 
-# 2. Initialize your project
-oasiswaker init my-oasis-node
-
-# 3. Configure
-cd my-oasis-node
-# Edit oasiswaker.config.js
-
-# 4. Push to GitHub
-git add . && git commit -m "Initial OasisWaker node"
-git push
-
-# 5. Deploy
-oasiswaker deploy --platform cloudflare
-```
-
-### For Existing Projects
-
-```bash
-# Install kernel into your project
-oasiswaker install
-
-# Configure
-# Edit oasiswaker.config.js
-
-# Deploy
-oasiswaker deploy
-```
-
----
-
-## 🏗️ Architecture
-
-```
-┌─────────────────────────────────────────────────────────────┐
-│                      User Layer                            │
-│  Your GitHub Repo                                          │
-│  └─ Your Project + OasisWaker Kernel                       │
-└─────────────────────────────────────────────────────────────┘
-                           │
-                           │ @oasiswaker/cli
-                           │
-┌──────────────────────────▼────────────────────────────────┐
-│                    Kernel Layer                            │
-│  @oasiswaker/core - P2P Network Engine                    │
-│  @oasiswaker/cloudflare/vercel/supabase - Adapters        │
-└────────────────────────────────────────────────────────────┘
-                           │
-                           │ P2P
-                           │
-┌──────────────────────────▼────────────────────────────────┐
-│                Decentralized Network                       │
-│  Node A ◄────────────► Node B ◄────────────► Node C      │
-└────────────────────────────────────────────────────────────┘
-```
-
----
-
-## 📚 Project Structure
-
-```
-oasiswaker/
-├── packages/           # Monorepo packages (coming soon)
-│   ├── core/          # P2P network kernel
-│   ├── cli/           # CLI tool
-│   └── adapters/      # Platform adapters
-│
-├── legacy/             # v1.0.0 archived code
-│
-├── NEW_ARCHITECTURE.md # v2.0 vision
-├── MIGRATION_PLAN.md   # How to get there
-└── DOCUMENTATION.md     # This index
-```
-
----
-
-## 📖 Documentation
-
-### Getting Started
-- [DOCUMENTATION.md](DOCUMENTATION.md) - Complete documentation index
-- [NEW_ARCHITECTURE.md](NEW_ARCHITECTURE.md) - v2.0 architecture vision
-- [MIGRATION_PLAN.md](MIGRATION_PLAN.md) - Phase-by-phase migration plan
-
-### Learning from v1.0
-- [LEGACY.md](LEGACY.md) - What v1.0.0 was
-- [CRITIQUE.md](CRITIQUE.md) - What went wrong (important lessons!)
-
-### Current Status
-- [.trae/specs/project-preparation-phase/](.trae/specs/project-preparation-phase/) - Current work
-- [.trae/archive/CODE_CLEANUP.md](.trae/archive/CODE_CLEANUP.md) - Known code issues
-
----
-
-## 🤝 Contributing
-
-We welcome contributions! See our docs:
-
-- [CONTRIBUTING.md](CONTRIBUTING.md) - How to contribute
-- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) - Community guidelines
-
-### Development Setup (Legacy v1.0)
-
-```bash
-# Clone and install
-git clone https://github.com/oasisbio/oasiswaker.git
-cd oasiswaker
+# Install dependencies
 npm install
 
 # Build
 npm run build
 
-# Test
+# Run CLI
+node dist/cli/index.js --help
+```
+
+> **Note:** You need Cloudflare/Vercel/Supabase API tokens to test deployment. See [RESOURCES.md](RESOURCES.md) for setup.
+
+---
+
+## Documentation
+
+| Document | Description |
+|-----------|-------------|
+| [VISION.md](VISION.md) | Ideal state — what we're building toward |
+| [PLAN.md](PLAN.md) | Phased roadmap with checklists and pitfalls |
+| [CRITIQUE.md](CRITIQUE.md) | Known security issues and technical debt |
+| [DOCUMENTATION.md](DOCUMENTATION.md) | Full documentation index |
+| [RESOURCES.md](RESOURCES.md) | Cloud platform setup checklist |
+| [PROJECT_STATUS.md](PROJECT_STATUS.md) | Current development status |
+| [NEW_ARCHITECTURE.md](NEW_ARCHITECTURE.md) | v2.0 architecture proposal (not implemented) |
+
+---
+
+## Project Structure
+
+```
+oasiswaker/
+├── src/
+│   ├── cli/           # CLI commands (commander.js)
+│   ├── auth/          # OAuth2.0 PKCE flow
+│   ├── crypto/        # AES-256-GCM encryption
+│   ├── deploy/        # Platform adapters (Cloudflare/Vercel/Supabase)
+│   └── utils/        # Shared utilities
+├── tests/
+├── .github/workflows/ # CI (multi-OS, multi-Node matrix)
+├── PLAN.md            # Roadmap
+├── VISION.md         # Ideal state
+└── CRITIQUE.md       # Known issues
+```
+
+> **Note:** The `packages/` monorepo structure described in older docs is planned for v2.0, not yet implemented.
+
+---
+
+## Contributing
+
+We welcome contributions! See:
+
+- [CONTRIBUTING.md](CONTRIBUTING.md) — How to contribute
+- [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md) — Community guidelines
+- [CRITIQUE.md](CRITIQUE.md) — Known issues (great starting points for contributors)
+
+### Development Setup
+
+```bash
+git clone https://github.com/Oasis-Company/OasisWaker.git
+cd OasisWaker
+npm install
+npm run build
 npm test
 ```
 
-**Note:** v2.0 development is coming soon. See [MIGRATION_PLAN.md](MIGRATION_PLAN.md).
+---
+
+## License
+
+[MIT licensed](LICENSE).
 
 ---
 
-## 📄 License
+## Community
 
-This project is [MIT licensed](LICENSE).
-
----
-
-## 🗣️ Community & Support
-
-- 💬 [Discord](https://discord.gg/oasisbio) - Join discussions
-- 🐛 [GitHub Issues](https://github.com/oasisbio/oasiswaker/issues) - Report issues
-- 📖 [Documentation](DOCUMENTATION.md) - Full documentation
+- 🐛 [GitHub Issues](https://github.com/Oasis-Company/OasisWaker/issues) — Report bugs
+- 💬 [GitHub Discussions](https://github.com/Oasis-Company/OasisWaker/discussions) — Ask questions
 
 ---
 
 <p align="center">
-  <strong>Built with ❤️ by the OasisBio Team</strong>
-  <br>
-  <em>Your project, the network. Build. Deploy. Connect.</em>
+  <strong>Built with ❤️ by the OasisBio Team</strong><br>
+  <em>Your free-tier cloud quota, aggregated.</em>
 </p>
-
-[![Star us on GitHub](https://img.shields.io/github/stars/oasisbio/oasiswaker?style=social)](https://github.com/oasisbio/oasiswaker)

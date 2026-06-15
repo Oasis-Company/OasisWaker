@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OasisWaker — Crowdsourced Edge Infrastructure</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0a0a0f;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+    a { color: #58a6ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
+
+    /* Header */
+    header {
+      padding: 80px 0 60px;
+      text-align: center;
+      background: linear-gradient(180deg, #16162a 0%, #0a0a0f 100%);
+    }
+    header h1 {
+      font-size: 48px;
+      font-weight: 700;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, #58a6ff, #bc8cff, #7ee787);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    header .tagline {
+      font-size: 20px;
+      color: #8b949e;
+      margin-bottom: 32px;
+    }
+    .cta-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      display: inline-block;
+      padding: 12px 28px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 15px;
+      transition: all 0.2s;
+    }
+    .btn-primary {
+      background: #238636;
+      color: #fff;
+    }
+    .btn-primary:hover { background: #2ea043; text-decoration: none; }
+    .btn-secondary {
+      border: 1px solid #30363d;
+      color: #e2e8f0;
+    }
+    .btn-secondary:hover { border-color: #58a6ff; text-decoration: none; }
+
+    /* Sections */
+    section { padding: 60px 0; }
+    section h2 {
+      font-size: 28px;
+      font-weight: 600;
+      margin-bottom: 32px;
+      text-align: center;
+    }
+    .alt-bg { background: #16162a; }
+
+    /* Status banner */
+    .status-banner {
+      max-width: 680px;
+      margin: 0 auto 40px;
+      padding: 16px 24px;
+      border-radius: 10px;
+      border: 1px solid #d29922;
+      background: rgba(210, 153, 34, 0.08);
+      text-align: center;
+      font-size: 14px;
+      color: #d29922;
+    }
+
+    /* Feature grid */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 20px;
+    }
+    .feature-card {
+      padding: 28px;
+      border-radius: 12px;
+      border: 1px solid #30363d;
+      background: #16162a;
+      transition: border-color 0.2s;
+    }
+    .feature-card:hover { border-color: #58a6ff; }
+    .feature-card .icon { font-size: 32px; margin-bottom: 16px; }
+    .feature-card h3 { font-size: 18px; margin-bottom: 10px; }
+    .feature-card p { font-size: 14px; color: #8b949e; }
+
+    /* Version comparsion */
+    .version-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .version-box {
+      padding: 28px;
+      border-radius: 12px;
+      border: 1px solid #30363d;
+    }
+    .version-box h3 { font-size: 18px; margin-bottom: 16px; }
+    .version-box ul { list-style: none; font-size: 14px; color: #8b949e; }
+    .version-box li { padding: 6px 0; }
+    .version-box .status-label {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-bottom: 12px;
+    }
+    .status-current {
+      background: rgba(35, 134, 54, 0.15);
+      color: #3fb950;
+    }
+    .status-vision {
+      background: rgba(88, 166, 255, 0.15);
+      color: #58a6ff;
+    }
+
+    /* Code block */
+    .code-block {
+      background: #16162a;
+      border: 1px solid #30363d;
+      border-radius: 10px;
+      padding: 20px 24px;
+      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      overflow-x: auto;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    .code-block .comment { color: #8b949e; }
+    .code-block .cmd { color: #7ee787; }
+    .code-block .out { color: #58a6ff; }
+
+    /* Docs grid */
+    .docs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px;
+      max-width: 720px;
+      margin: 0 auto;
+    }
+    .doc-card {
+      padding: 20px;
+      border-radius: 10px;
+      border: 1px solid #30363d;
+      text-align: center;
+      transition: border-color 0.2s;
+    }
+    .doc-card:hover { border-color: #58a6ff; text-decoration: none; color: #58a6ff; }
+    .doc-card .doc-title { font-weight: 600; margin-bottom: 6px; }
+    .doc-card .doc-desc { font-size: 13px; color: #8b949e; }
+
+    /* Footer */
+    footer {
+      padding: 40px 0;
+      text-align: center;
+      font-size: 13px;
+      color: #8b949e;
+      border-top: 1px solid #30363d;
+    }
+    footer a { margin: 0 12px; }
+
+    @media (max-width: 600px) {
+      header h1 { font-size: 32px; }
+      .version-compare { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="container">
+    <h1>🌴 OasisWaker</h1>
+    <p class="tagline">Crowdsourced edge infrastructure. Your free-tier cloud quota, aggregated.</p>
+    <div class="cta-buttons">
+      <a href="https://github.com/Oasis-Company/OasisWaker" class="btn btn-primary">View on GitHub</a>
+      <a href="https://github.com/Oasis-Company/OasisWaker/blob/main/README.md" class="btn btn-secondary">Documentation</a>
+    </div>
+  </div>
+</header>
+
+<section class="alt-bg">
+  <div class="container">
+    <div class="status-banner">
+      ⚠️ <strong>Honest status:</strong> v1.0 is functional but has known security issues.
+      See <a href="https://github.com/Oasis-Company/OasisWaker/blob/main/CRITIQUE.md">CRITIQUE.md</a> for details.
+      v2.0 (true P2P) is not yet implemented.
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="icon">🔗</div>
+        <h3>Works with What You Have</h3>
+        <p>Cloudflare Workers, Vercel Edge, Supabase Edge — use your existing free-tier quota. No new accounts needed beyond what you already have.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🔐</div>
+        <h3>Client-Side Encryption</h3>
+        <p>Data is encrypted with AES-256-GCM before it leaves your machine. Node operators cannot read what they store.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">🌐</div>
+        <h3>Global by Default</h3>
+        <p>Edge nodes span every region where Cloudflare, Vercel, or Supabase operate. No single geographic point of failure.</p>
+      </div>
+      <div class="feature-card">
+        <div class="icon">💡</div>
+        <h3>Vision: True P2P</h3>
+        <p>v2.0 aims for a DHT-based mesh where nodes discover each other without a central coordinator. <a href="VISION.md">Read the vision →</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h2>Two Versions, One Project</h2>
+    <div class="version-compare">
+      <div class="version-box">
+        <span class="status-label status-current">✅ Current: v1.0</span>
+        <h3>Centralized CLI Tool</h3>
+        <ul>
+          <li>✅ <code>oasiswaker init/login/deploy</code></li>
+          <li>✅ OAuth2.0 PKCE flow</li>
+          <li>✅ Deploys to Cloudflare/Vercel/Supabase</li>
+          <li>✅ Unified block storage API</li>
+          <li>⚠️ Central coordinator (SPOF)</li>
+          <li>⚠️ Known security issues</li>
+        </ul>
+      </div>
+      <div class="version-box">
+        <span class="status-label status-vision">🔮 Vision: v2.0</span>
+        <h3>True P2P Mesh</h3>
+        <ul>
+          <li>🔮 DHT node discovery (Kademlia)</li>
+          <li>🔮 Erasure coding for data redundancy</li>
+          <li>🔮 No central coordinator</li>
+          <li>🔮 Incentive layer (credits)</li>
+          <li>🔮 Monorepo package structure</li>
+          <li>❌ Not implemented yet</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt-bg">
+  <div class="container">
+    <h2>Quick Preview (v1.0)</h2>
+    <div class="code-block">
+      <span class="comment"># Install and initialize</span>
+      <span class="cmd">$ npm install -g @oasisbio/oasiswaker</span>
+      <span class="cmd">$ oasiswaker init</span>
+      <span class="out">  ✓ Node identity: a3f2b1e4-8c9d...</span>
+      <span class="comment"></span>
+      <span class="comment"># Connect your Cloudflare account</span>
+      <span class="cmd">$ oasiswaker login --cloudflare</span>
+      <span class="out">  ✓ OAuth authorized. Credentials encrypted and stored.</span>
+      <span class="comment"></span>
+      <span class="comment"># Deploy an edge node</span>
+      <span class="cmd">$ oasiswaker deploy --platform cloudflare</span>
+      <span class="out">  ✓ Worker deployed to your account.</span>
+      <span class="out">  ✓ Block storage API live at: https://...</span>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="container">
+    <h2>Documentation</h2>
+    <div class="docs-grid">
+      <a href="https://github.com/Oasis-Company/OasisWaker/blob/main/README.md" class="doc-card">
+        <div class="doc-title">README</div>
+        <div class="doc-desc">Project overview and quick start</div>
+      </a>
+      <a href="https://github.com/Oasis-Company/OasisWaker/blob/main/PLAN.md" class="doc-card">
+        <div class="doc-title">PLAN.md</div>
+        <div class="doc-desc">Phased roadmap with checklists</div>
+      </a>
+      <a href="https://github.com/Oasis-Company/OasisWaker/blob/main/VISION.md" class="doc-card">
+        <div class="doc-title">VISION.md</div>
+        <div class="doc-desc">Ideal state — what we're building toward</div>
+      </a>
+      <a href="https://github.com/Oasis-Company/OasisWaker/blob/main/CRITIQUE.md" class="doc-card">
+        <div class="doc-title">CRITIQUE.md</div>
+        <div class="doc-desc">Known issues and technical debt</div>
+      </a>
+      <a href="https://github.com/Oasis-Company/OasisWaker/blob/main/NEW_ARCHITECTURE.md" class="doc-card">
+        <div class="doc-title">NEW_ARCHITECTURE.md</div>
+        <div class="doc-desc">v2.0 architecture proposal</div>
+      </a>
+      <a href="https://github.com/Oasis-Company/OasisWaker/blob/main/RESOURCES.md" class="doc-card">
+        <div class="doc-title">RESOURCES.md</div>
+        <div class="doc-desc">Cloud platform setup checklist</div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="container">
+    <p>
+      <a href="https://github.com/Oasis-Company/OasisWaker">GitHub</a>
+      <a href="https://github.com/Oasis-Company/OasisWaker/issues">Issues</a>
+      <a href="https://github.com/Oasis-Company/OasisWaker/blob/main/LICENSE">MIT License</a>
+    </p>
+    <p style="margin-top: 12px;">Built with ❤️ by the OasisBio Team</p>
+  </div>
+</footer>
+
+</body>
+</html>

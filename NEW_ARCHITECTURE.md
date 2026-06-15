@@ -1,23 +1,30 @@
-# OasisWaker New Architecture: Universal Infrastructure Kernel
+# OasisWaker v2.0 — Architecture Proposal
 
-## 📋 Repositioning
-
-**Old Design**:
-- Users directly run CLI to deploy one-time nodes
-- Centralized coordination (OasisBio)
-- Single purpose
-
-**New Design**:
-- OasisWaker as a kernel integrated into user projects
-- True P2P decentralized network
-- Universal infrastructure (not limited to OasisBio)
+> **Status:** This is a proposal. No v2.0 code has been written yet.
+> v1.0 (the current CLI tool) is documented in [DOCUMENTATION.md](DOCUMENTATION.md).
+> The migration plan is in [MIGRATION_PLAN.md](MIGRATION_PLAN.md).
 
 ---
 
-## 🏗️ New Architecture Overview
+## Why a New Architecture?
+
+v1.0 works, but has fundamental limitations:
+
+| Problem | v1.0 | v2.0 Goal |
+|---------|-------|------------|
+| Central coordination | OasisBio server is SPOF | True P2P — nodes find each other |
+| Node discovery | Central directory | DHT (Kademlia) |
+| Single point of failure | Yes — server goes down, network stops | No — network routes around outages |
+| User ownership | Limited — you deploy via our server | Complete — your project, your node |
+
+---
+
+## Proposed Architecture
+
+### Overview
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
+┌─────────────────────────────────────────────────────┐
 │                         User Layer                                  │
 │  ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐   │
 │  │ User Project 1  │  │ User Project 2  │  │ User Project 3  │   │
@@ -54,89 +61,73 @@
 └─────────────────────────────────────────────────────────────────────┘
 ```
 
----
-
-## 📦 Monorepo Project Structure
+### Monorepo Structure (Proposed)
 
 ```
 oasiswaker/
-├── 📁 packages/
-│   ├── 📦 core/
-│   │   ├── src/
-│   │   │   ├── p2p/           # P2P Network
-│   │   │   ├── storage/       # Storage Abstraction
-│   │   │   └── discovery/     # Node Discovery
-│   │   └── package.json
-│   │
-│   ├── 📦 cli/
-│   │   ├── src/
-│   │   │   ├── init.ts        # Initialize User Project
-│   │   │   ├── install.ts     # Install Kernel
-│   │   │   ├── deploy.ts      # Deploy User Project
-│   │   │   └── update.ts      # Update Kernel
-│   │   └── package.json
-│   │
-│   ├── 📦 cloudflare/
-│   ├── 📦 vercel/
-│   └── 📦 supabase/
+├── packages/
+│   ├── core/          # P2P network kernel
+│   ├── cli/           # CLI tool
+│   ├── cloudflare/   # Cloudflare Worker adapter
+│   ├── vercel/       # Vercel Edge adapter
+│   └── supabase/     # Supabase Edge adapter
 │
-├── 📁 templates/
-│   └── default/               # New User Project Template
+├── templates/         # New user project template
+│   └── default/
 │       ├── oasiswaker.config.js
 │       ├── package.json
 │       └── src/
 │
-└── package.json
+└── package.json       # workspace root
 ```
+
+> **Note:** The current repo is NOT a monorepo yet. This structure is the target for Phase 1 of the migration plan.
 
 ---
 
-## 🚀 New User Workflow
+## Proposed User Workflow (v2.0)
 
-### 1️⃣ Initialize Project (User)
+### 1. Initialize Project
 
 ```bash
-# Install CLI
 npm install -g @oasiswaker/cli
 
-# Initialize a new project
 oasiswaker init my-oasis-node
-
 cd my-oasis-node
 
-# This creates a complete project including:
-# - OasisWaker Kernel
-# - Configuration File
-# - Deployment Template
-# - GitHub Workflow
+# Creates:
+# - OasisWaker Kernel (installed as dependency)
+# - oasiswaker.config.js
+# - Deployment template
+# - GitHub Actions workflow
 ```
 
-### 2️⃣ Configure Project (User)
+### 2. Configure
 
 ```javascript
 // my-oasis-node/oasiswaker.config.js
 export default {
   network: 'mainnet',
-  
+
   node: {
     id: 'my-awesome-node',
     name: 'My First Oasis Node',
   },
-  
+
   platforms: ['cloudflare', 'vercel'],
-  
+
   p2p: {
     discovery: ['dht', 'bootstrap'],
     bootstrap: ['https://seed1.oasiswaker.dev'],
   },
-  
+
   storage: {
     capacity: '10GB',
   }
 };
 ```
 
-### 3️⃣ Push to GitHub (User)
+### 3. Push to GitHub
 
 ```bash
 git init
@@ -146,68 +137,37 @@ git remote add origin https://github.com/you/my-oasis-node
 git push
 ```
 
-### 4️⃣ Deploy (User)
+### 4. Deploy
 
 ```bash
-# Deploy to Cloudflare
 oasiswaker deploy --platform cloudflare
-
-# Deploy to Vercel
 oasiswaker deploy --platform vercel
-
-# This deploys your entire project + OasisWaker kernel together
 ```
 
-### 5️⃣ Auto-form Network (P2P)
+### 5. Auto-form Network (P2P)
 
-```
-Once deployed, user's node automatically:
-1. Joins DHT network
+Once deployed, the node automatically:
+1. Joins the DHT network
 2. Discovers other nodes
-3. Starts direct communication
-4. Forms decentralized network
-```
+3. Starts direct P2P communication
+4. Forms a decentralized mesh
 
 ---
 
-## 🎯 Core Design Principles
+## Core Components (Proposed)
 
-### ✅ True Decentralization
-- No single point of failure
-- Direct P2P communication between nodes
-- DHT node discovery
-
-### ✅ Universal Infrastructure
-- Any project can integrate
-- Not limited to OasisBio
-- Modular design
-
-### ✅ User Ownership
-- Users have full control over their nodes
-- Users own their project code
-- Users have their own GitHub repositories
-
-### ✅ Continuous Maintenance
-- `oasiswaker update` command updates kernel
-- Version management
-- Rolling upgrades
-
----
-
-## 📝 Core Components Details
-
-### @oasiswaker/core
-- P2P DHT Network
+### `@oasiswaker/core`
+- P2P DHT Network (libp2p / kad-dht)
 - Message Passing System
-- Data Synchronization Protocol
+- Data Synchronization Protocol (CRDT-based)
 - Node Discovery
 
-### @oasiswaker/cli
-- init: Initialize user project
-- install: Install/update kernel
-- deploy: Deploy user project
-- status: View network status
-- update: Update kernel version
+### `@oasiswaker/cli`
+- `init` — Initialize user project
+- `install` — Install/update kernel
+- `deploy` — Deploy user project
+- `status` — View network status
+- `update` — Update kernel version
 
 ### Platform Adapters
 - Handle different cloud platform deployments
@@ -216,16 +176,34 @@ Once deployed, user's node automatically:
 
 ---
 
-## 🎨 New Architecture Advantages
+## Design Principles
 
-| Comparison | Old Architecture | New Architecture |
-|------------|------------------|------------------|
-| Centralization | ❌ Yes | ✅ No (P2P) |
-| Universality | ❌ Single purpose | ✅ Universal infrastructure |
-| User Control | ⚠️ Partial | ✅ Complete |
-| Scalability | ⚠️ Limited | ✅ Unlimited |
-| Single Point of Failure | ❌ Yes | ✅ No |
+✅ **True Decentralization** — No single point of failure  
+✅ **Universal Infrastructure** — Any project can integrate  
+✅ **User Ownership** — Users own their code and nodes  
+✅ **Continuous Maintenance** — `oasiswaker update` keeps kernel current  
 
 ---
 
-**This is what OasisWaker should look like!** 🌴
+## Current Status
+
+| Component | Status | Notes |
+|-----------|--------|-------|
+| v1.0 CLI tool | ✅ Implemented | Working, security issues documented in [CRITIQUE.md](CRITIQUE.md) |
+| Monorepo structure | ❌ Not started | Phase 1 of [PLAN.md](PLAN.md) |
+| P2P DHT | ❌ Not started | Phase 2 — blocked by Worker runtime limits (see [CRITIQUE.md](CRITIQUE.md)) |
+| Erasure coding | ❌ Not started | Phase 3 |
+| Incentive layer | ❌ Not started | Phase 4 |
+
+---
+
+## Next Steps
+
+1. **Phase 0:** Fix v1.0 security issues ([CRITIQUE.md](CRITIQUE.md))
+2. **Phase 1:** Monorepo migration ([MIGRATION_PLAN.md](MIGRATION_PLAN.md))
+3. **Phase 2:** P2P network spike (validate libp2p on CLI daemons before touching Workers)
+4. **Phase 3+:** Erasure coding, incentives, production hardening
+
+---
+
+*This document describes a proposal. If you're reading this and want to help build it, see [CONTRIBUTING.md](CONTRIBUTING.md).*
