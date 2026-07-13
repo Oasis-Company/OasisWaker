@@ -1,0 +1,85 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ═══════════════════════════════════════════════════════════════════
+   OasisWaker v2.0 — Swiss Style Design System
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Inter Font (Google Fonts) ───────────────────────────────────── */
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
+
+/* ── Base Reset ──────────────────────────────────────────────────── */
+@layer base {
+  *,
+  *::before,
+  *::after {
+    border-color: theme("colors.swiss.gray.300");
+  }
+
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-family: "Inter", system-ui, sans-serif;
+  }
+
+  body {
+    @apply bg-swiss-white text-swiss-black text-body;
+  }
+}
+
+/* ── Utility Classes ─────────────────────────────────────────────── */
+@layer components {
+  /* Card — Swiss style: bordered, no shadow, no radius */
+  .card {
+    @apply border border-swiss-gray-300 bg-swiss-white p-md;
+  }
+
+  /* Status indicators */
+  .status-online {
+    @apply bg-swiss-black text-swiss-white;
+  }
+  .status-offline {
+    @apply bg-swiss-gray-200 text-swiss-gray-500;
+  }
+  .status-error {
+    @apply bg-swiss-red text-swiss-white;
+  }
+
+  /* Sidebar navigation */
+  .nav-item {
+    @apply flex items-center gap-md px-lg py-sm text-body
+           text-swiss-gray-500 hover:text-swiss-black
+           hover:bg-swiss-gray-100 transition-colors;
+  }
+  .nav-item-active {
+    @apply nav-item text-swiss-black bg-swiss-gray-100 border-r-2 border-swiss-black;
+  }
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: theme("colors.swiss.gray.100");
+}
+::-webkit-scrollbar-thumb {
+  background: theme("colors.swiss.gray.300");
+}
+
+/* ── Table ───────────────────────────────────────────────────────── */
+table {
+  border-collapse: collapse;
+  width: 100%;
+}
+th {
+  @apply text-caption text-swiss-gray-500 text-left
+         border-b border-swiss-gray-300 pb-sm pt-md;
+}
+td {
+  @apply text-body py-sm border-b border-swiss-gray-200;
+}
+tr:hover td {
+  @apply bg-swiss-gray-100;
+}
