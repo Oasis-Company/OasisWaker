@@ -26,10 +26,31 @@ class Settings(BaseSettings):
 
     # ── Security ────────────────────────────────────────────────────────
     secret_key: str = "change-me-in-production"
-    access_token_expire_minutes: int = 60
 
     # ── Data paths ──────────────────────────────────────────────────────
     data_dir: Path = Path.home() / ".oasiswaker"
+
+    # ── JWT ─────────────────────────────────────────────────────────────
+    jwt_algorithm: str = "HS256"
+    access_token_expire_minutes: int = 60
+    refresh_token_expire_days: int = 7
+
+    # ── GitHub OAuth ────────────────────────────────────────────────────
+    github_client_id: str | None = None
+    github_client_secret: str | None = None
+
+    # ── API Key ─────────────────────────────────────────────────────────
+    api_key_expire_days: int = 365
+
+    # ── Rate Limiting ───────────────────────────────────────────────────
+    rate_limit_enabled: bool = True
+    rate_limit_requests_per_minute: int = 60
+
+    # ── Quota ───────────────────────────────────────────────────────────
+    default_storage_quota_bytes: int = 10 * 1024 * 1024 * 1024  # 10 GB
+
+    # ── Request Size ────────────────────────────────────────────────────
+    max_request_size_mb: int = 10
 
 
 settings = Settings()

@@ -11,6 +11,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.database import close_db, create_all_tables, init_db
 from app.routes import (
+    auth_router,
     blocks_router,
     health_router,
     nodes_router,
@@ -49,6 +50,7 @@ def create_app() -> FastAPI:
     )
 
     # ── Routers ─────────────────────────────────────────────────────────
+    app.include_router(auth_router)
     app.include_router(nodes_router)
     app.include_router(blocks_router)
     app.include_router(health_router)

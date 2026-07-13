@@ -19,6 +19,7 @@ class NodeCreate(BaseModel):
     version: str | None = None
     total_storage: int = 0
     metadata_json: dict[str, Any] | None = None
+    project_id: str | None = None
 
 
 # ── Read ───────────────────────────────────────────────────────────────────

@@ -17,6 +17,17 @@ from app.schemas.connection import (
     ConnectionRead,
     ConnectionListResponse,
 )
+from app.schemas.auth import (
+    SignupRequest,
+    LoginRequest,
+    TokenResponse,
+    RefreshRequest,
+    GithubAuthRequest,
+    UserRead,
+    ApiKeyCreate,
+    ApiKeyRead,
+    ApiKeyCreated,
+)
 
 __all__ = [
     "NodeCreate",
@@ -30,4 +41,13 @@ __all__ = [
     "ConnectionCreate",
     "ConnectionRead",
     "ConnectionListResponse",
+    "SignupRequest",
+    "LoginRequest",
+    "TokenResponse",
+    "RefreshRequest",
+    "GithubAuthRequest",
+    "UserRead",
+    "ApiKeyCreate",
+    "ApiKeyRead",
+    "ApiKeyCreated",
 ]

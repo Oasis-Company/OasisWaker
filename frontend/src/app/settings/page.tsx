@@ -1,7 +1,9 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Button } from "@/components/ui/Button";
+import { Key } from "lucide-react";
 
 export default function SettingsPage() {
   return (
@@ -11,6 +13,25 @@ export default function SettingsPage() {
         <p className="text-swiss-gray-500 mt-sm">
           System configuration and preferences
         </p>
+      </div>
+
+      {/* API Keys */}
+      <div className="card">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="text-h2 mb-xs">API Keys</h2>
+            <p className="text-body text-swiss-gray-500">
+              Create and manage API keys for programmatic access.
+            </p>
+          </div>
+          <Link
+            href="/settings/api-keys"
+            className="flex items-center gap-sm bg-swiss-black text-swiss-white text-body-bold px-xl py-sm hover:bg-swiss-gray-700 transition-colors"
+          >
+            <Key className="w-4 h-4" />
+            Manage keys
+          </Link>
+        </div>
       </div>
 
       {/* Backend Connection */}
@@ -26,7 +47,7 @@ export default function SettingsPage() {
           <div className="flex items-center justify-between">
             <span className="text-body">WebSocket</span>
             <span className="text-caption text-swiss-gray-500 font-mono">
-              ws://127.0.0.1:8000/ws/v1/events
+              ws://127.0.0.1:8000/ws
             </span>
           </div>
           <div className="flex items-center justify-between">
@@ -59,19 +80,6 @@ export default function SettingsPage() {
               Next.js 14 + TailwindCSS + Swiss Style
             </span>
           </div>
-        </div>
-      </div>
-
-      {/* Actions */}
-      <div className="card">
-        <h2 className="text-h2 mb-md">Actions</h2>
-        <div className="flex gap-md">
-          <Button variant="secondary" size="md">
-            Reset Database
-          </Button>
-          <Button variant="ghost" size="md">
-            Export Logs
-          </Button>
         </div>
       </div>
     </div>

@@ -5,10 +5,11 @@ from __future__ import annotations
 from datetime import datetime, timezone
 from typing import Any
 
-from sqlalchemy import select, func, update
+from sqlalchemy import select, func
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.node import Node
+from app.models.user import User
 from app.schemas.node import NodeCreate, NodeUpdate, NodeHeartbeat
 
 
@@ -16,7 +17,9 @@ class NodeService:
     """Stateless service for node operations."""
 
     @staticmethod
-    async def create(db: AsyncSession, data: NodeCreate) -> Node:
+    async def create(
+        db: AsyncSession, data: NodeCreate, user: User | None = None
+    ) -> Node:
         node = Node(
             name=data.name,
             node_id=data.node_id,
@@ -27,6 +30,8 @@ class NodeService:
             metadata_json=(
                 str(data.metadata_json) if data.metadata_json else None
             ),
+            user_id=user.id if user else None,
+            project_id=data.project_id,
         )
         db.add(node)
         await db.flush()
@@ -34,20 +39,29 @@ class NodeService:
         return node
 
     @staticmethod
-    async def get_by_id(db: AsyncSession, node_id: str) -> Node | None:
-        result = await db.execute(select(Node).where(Node.id == node_id))
+    async def get_by_id(
+        db: AsyncSession, node_id: str, user: User | None = None
+    ) -> Node | None:
+        query = select(Node).where(Node.id == node_id)
+        if user is not None:
+            query = query.where(Node.user_id == user.id)
+        result = await db.execute(query)
         return result.scalar_one_or_none()
 
     @staticmethod
-    async def get_by_node_id(db: AsyncSession, node_id: str) -> Node | None:
-        result = await db.execute(
-            select(Node).where(Node.node_id == node_id)
-        )
+    async def get_by_node_id(
+        db: AsyncSession, node_id: str, user: User | None = None
+    ) -> Node | None:
+        query = select(Node).where(Node.node_id == node_id)
+        if user is not None:
+            query = query.where(Node.user_id == user.id)
+        result = await db.execute(query)
         return result.scalar_one_or_none()
 
     @staticmethod
     async def list_all(
         db: AsyncSession,
+        user: User | None = None,
         skip: int = 0,
         limit: int = 100,
         status_filter: str | None = None,
@@ -55,6 +69,8 @@ class NodeService:
     ) -> tuple[list[Node], int]:
         query = select(Node)
 
+        if user is not None:
+            query = query.where(Node.user_id == user.id)
         if status_filter is not None:
             query = query.where(Node.status == status_filter)
         if is_active is not None:
@@ -73,9 +89,12 @@ class NodeService:
 
     @staticmethod
     async def update(
-        db: AsyncSession, node_id: str, data: NodeUpdate
+        db: AsyncSession,
+        node_id: str,
+        data: NodeUpdate,
+        user: User | None = None,
     ) -> Node | None:
-        node = await NodeService.get_by_id(db, node_id)
+        node = await NodeService.get_by_id(db, node_id, user=user)
         if node is None:
             return None
 
@@ -95,8 +114,10 @@ class NodeService:
         return node
 
     @staticmethod
-    async def delete(db: AsyncSession, node_id: str) -> bool:
-        node = await NodeService.get_by_id(db, node_id)
+    async def delete(
+        db: AsyncSession, node_id: str, user: User | None = None
+    ) -> bool:
+        node = await NodeService.get_by_id(db, node_id, user=user)
         if node is None:
             return False
         await db.delete(node)
@@ -105,9 +126,12 @@ class NodeService:
 
     @staticmethod
     async def process_heartbeat(
-        db: AsyncSession, node_id: str, data: NodeHeartbeat
+        db: AsyncSession,
+        node_id: str,
+        data: NodeHeartbeat,
+        user: User | None = None,
     ) -> Node | None:
-        node = await NodeService.get_by_id(db, node_id)
+        node = await NodeService.get_by_id(db, node_id, user=user)
         if node is None:
             return None
 
@@ -123,22 +147,33 @@ class NodeService:
         return node
 
     @staticmethod
-    async def get_stats(db: AsyncSession) -> dict[str, Any]:
-        """Return global statistics across all nodes."""
-        total_result = await db.execute(select(func.count()).select_from(Node))
+    async def get_stats(
+        db: AsyncSession, user: User | None = None
+    ) -> dict[str, Any]:
+        """Return statistics scoped to the current user."""
+        query = select(func.count()).select_from(Node)
+        if user is not None:
+            query = query.where(Node.user_id == user.id)
+        total_result = await db.execute(query)
         total_nodes = total_result.scalar_one()
 
-        active_result = await db.execute(
-            select(func.count()).select_from(Node).where(Node.is_active == True)  # noqa: E712
+        active_query = (
+            select(func.count())
+            .select_from(Node)
+            .where(Node.is_active == True)  # noqa: E712
         )
+        if user is not None:
+            active_query = active_query.where(Node.user_id == user.id)
+        active_result = await db.execute(active_query)
         active_nodes = active_result.scalar_one()
 
-        storage_result = await db.execute(
-            select(
-                func.coalesce(func.sum(Node.total_storage), 0),
-                func.coalesce(func.sum(Node.used_storage), 0),
-            )
+        storage_query = select(
+            func.coalesce(func.sum(Node.total_storage), 0),
+            func.coalesce(func.sum(Node.used_storage), 0),
         )
+        if user is not None:
+            storage_query = storage_query.where(Node.user_id == user.id)
+        storage_result = await db.execute(storage_query)
         total_storage, used_storage = storage_result.one()
 
         return {

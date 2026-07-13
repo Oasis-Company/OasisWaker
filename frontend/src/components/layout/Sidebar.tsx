@@ -1,17 +1,19 @@
 "use client";
 
-import React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
+  Activity,
   LayoutDashboard,
   Server,
   Link2,
   Settings,
-  Activity,
+  LogOut,
+  User,
 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
 
-const navItems = [
+const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/nodes", label: "Nodes", icon: Server },
   { href: "/connections", label: "Connections", icon: Link2 },
@@ -20,46 +22,62 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { user, logout } = useAuth();
+
+  const isActive = (href: string) => {
+    if (href === "/dashboard") {
+      return pathname === "/dashboard";
+    }
+    return pathname.startsWith(href);
+  };
 
   return (
-    <aside className="w-60 h-screen border-r border-swiss-gray-300 bg-swiss-white flex flex-col">
+    <aside className="w-60 border-r border-swiss-gray-300 flex flex-col bg-swiss-white flex-shrink-0">
       {/* Logo */}
-      <div className="px-lg py-xl border-b border-swiss-gray-300">
-        <Link href="/dashboard" className="flex items-center gap-md">
-          <Activity className="w-6 h-6 text-swiss-black" />
-          <span className="text-h3 font-bold text-swiss-black">OasisWaker</span>
-        </Link>
-        <span className="text-caption text-swiss-gray-400 mt-xs block">
-          v2.0 — Network Dashboard
-        </span>
+      <div className="h-16 border-b border-swiss-gray-300 flex items-center px-lg gap-md">
+        <Activity className="w-5 h-5 text-swiss-black" />
+        <span className="text-body-bold text-swiss-black">OasisWaker</span>
       </div>
 
-      {/* Navigation */}
-      <nav className="flex-1 py-md">
-        {navItems.map((item) => {
-          const isActive = pathname === item.href;
+      {/* Nav */}
+      <nav className="flex-1 py-lg">
+        {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={isActive ? "nav-item-active" : "nav-item"}
+              className={`nav-item ${isActive(item.href) ? "nav-item-active" : ""}`}
             >
-              <Icon className="w-5 h-5" />
-              {item.label}
+              <Icon className="w-4 h-4" />
+              <span>{item.label}</span>
             </Link>
           );
         })}
       </nav>
 
-      {/* Footer */}
-      <div className="px-lg py-md border-t border-swiss-gray-300">
-        <div className="flex items-center gap-md">
-          <div className="w-2 h-2 bg-swiss-black rounded-none" />
-          <span className="text-caption text-swiss-gray-500">
-            All systems nominal
-          </span>
+      {/* User Info & Logout */}
+      <div className="border-t border-swiss-gray-300 p-lg">
+        <div className="flex items-center gap-md mb-md">
+          <div className="w-8 h-8 bg-swiss-black flex items-center justify-center">
+            <User className="w-4 h-4 text-swiss-white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-caption text-swiss-black truncate">
+              {user?.full_name || user?.email || "User"}
+            </p>
+            <p className="text-caption text-swiss-gray-400 truncate">
+              {user?.email || ""}
+            </p>
+          </div>
         </div>
+        <button
+          onClick={logout}
+          className="nav-item w-full text-swiss-gray-500 hover:text-swiss-red"
+        >
+          <LogOut className="w-4 h-4" />
+          <span>Sign out</span>
+        </button>
       </div>
     </aside>
   );

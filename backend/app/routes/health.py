@@ -1,4 +1,4 @@
-"""Health check and global statistics routes."""
+"""Health check routes — /public for uptime, /stats for user-scoped metrics."""
 
 from __future__ import annotations
 
@@ -7,21 +7,25 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.auth.dependencies import get_current_user
 from app.database import get_session
+from app.models.user import User
 from app.services.node_service import NodeService
 
-router = APIRouter(prefix="/api/v1", tags=["health"])
+router = APIRouter(tags=["health"])
 
 
 @router.get("/health")
-async def health_check() -> dict[str, str]:
-    """Simple health check — returns server status."""
-    return {"status": "ok", "service": "oasiswaker-backend", "version": "2.0.0"}
+async def health_check() -> dict:
+    """Public endpoint — returns server status (no auth required)."""
+    return {"status": "ok", "service": "oasiswaker-v2"}
 
 
-@router.get("/stats")
+@router.get("/api/v1/stats")
 async def get_stats(
+    current_user: Annotated[User, Depends(get_current_user)],
     db: Annotated[AsyncSession, Depends(get_session)],
 ) -> dict:
-    """Return aggregate network statistics."""
-    return await NodeService.get_stats(db)
+    """User-scoped statistics — only returns data for the current user."""
+    stats = await NodeService.get_stats(db, user=current_user)
+    return stats

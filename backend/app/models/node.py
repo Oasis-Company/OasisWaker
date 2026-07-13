@@ -5,7 +5,7 @@ from __future__ import annotations
 import uuid
 from datetime import datetime, timezone
 
-from sqlalchemy import Boolean, DateTime, Integer, String, Text
+from sqlalchemy import Boolean, DateTime, ForeignKey, Integer, String, Text
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.database import Base
@@ -46,7 +46,21 @@ class Node(Base):
         onupdate=lambda: datetime.now(timezone.utc),
     )
 
+    # ── Multi-tenancy ────────────────────────────────────────────────────
+    user_id: Mapped[str | None] = mapped_column(
+        String(36), ForeignKey("users.id"), nullable=True, index=True
+    )
+    project_id: Mapped[str | None] = mapped_column(
+        String(36), ForeignKey("projects.id"), nullable=True, index=True
+    )
+
     # ── Relationships ────────────────────────────────────────────────────
+    user: Mapped["User"] = relationship(
+        "User", back_populates="nodes"
+    )
+    project: Mapped["Project"] = relationship(
+        "Project", back_populates="nodes"
+    )
     blocks: Mapped[list["Block"]] = relationship(
         "Block", back_populates="node", cascade="all, delete-orphan"
     )
