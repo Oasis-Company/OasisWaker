@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Sidebar } from "@/components/layout/Sidebar";
+import { AppShell } from "@/components/layout/AppShell";
 
 export const metadata: Metadata = {
-  title: "OasisWaker v2.0 — Network Dashboard",
-  description: "Central coordination dashboard for the OasisWaker decentralized edge storage network",
+  title: "OasisWaker — Crowdsourced Edge Infrastructure",
+  description:
+    "Your free cloud quotas, aggregated into infrastructure no single company controls.",
 };
 
 export default function RootLayout({
@@ -14,11 +15,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="flex min-h-screen">
-        <Sidebar />
-        <main className="flex-1 overflow-auto">
-          <div className="p-3xl max-w-7xl mx-auto">{children}</div>
-        </main>
+      <body>
+        <AppShell>{children}</AppShell>
       </body>
     </html>
   );
