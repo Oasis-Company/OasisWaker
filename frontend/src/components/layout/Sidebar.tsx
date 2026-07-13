@@ -8,6 +8,7 @@ import {
   Server,
   Link2,
   Settings,
+  BookOpen,
   LogOut,
   User,
 } from "lucide-react";
@@ -17,6 +18,7 @@ const NAV_ITEMS = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { href: "/nodes", label: "Nodes", icon: Server },
   { href: "/connections", label: "Connections", icon: Link2 },
+  { href: "/docs", label: "Docs", icon: BookOpen },
   { href: "/settings", label: "Settings", icon: Settings },
 ];
 
@@ -40,7 +42,7 @@ export function Sidebar() {
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 py-lg">
+      <nav className="flex-1 py-lg" aria-label="Main navigation">
         {NAV_ITEMS.map((item) => {
           const Icon = item.icon;
           return (
@@ -48,6 +50,8 @@ export function Sidebar() {
               key={item.href}
               href={item.href}
               className={`nav-item ${isActive(item.href) ? "nav-item-active" : ""}`}
+              aria-current={isActive(item.href) ? "page" : undefined}
+              tabIndex={0}
             >
               <Icon className="w-4 h-4" />
               <span>{item.label}</span>
@@ -74,6 +78,7 @@ export function Sidebar() {
         <button
           onClick={logout}
           className="nav-item w-full text-swiss-gray-500 hover:text-swiss-red"
+          aria-label="Sign out"
         >
           <LogOut className="w-4 h-4" />
           <span>Sign out</span>

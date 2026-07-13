@@ -51,12 +51,13 @@ const config: Config = {
       // ── Font Family ────────────────────────────────────────────────────
       fontFamily: {
         sans: [
-          "Inter",
+          "var(--font-space-grotesk)",
           "system-ui",
-          "-apple-system",
-          "Segoe UI",
-          "Roboto",
           "sans-serif",
+        ],
+        mono: [
+          "JetBrains Mono",
+          "monospace",
         ],
       },
       // ── Border Radius (Swiss: sharp corners only) ──────────────────────

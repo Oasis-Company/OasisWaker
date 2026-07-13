@@ -112,6 +112,7 @@ export default function NodesPage() {
         <Table
           columns={columns}
           data={nodes}
+          getRowKey={(node) => node.id}
           onRowClick={(node) => router.push(`/nodes/${node.id}`)}
         />
       </div>

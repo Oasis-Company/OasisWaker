@@ -9,6 +9,7 @@ const APP_ROUTES = [
   "/dashboard",
   "/nodes",
   "/connections",
+  "/docs",
   "/settings",
   "/settings/api-keys",
 ];

@@ -2,84 +2,137 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ═══════════════════════════════════════════════════════════════════
-   OasisWaker v2.0 — Swiss Style Design System
-   ═══════════════════════════════════════════════════════════════════ */
+/* ── Swiss Style Design System ─────────────────────────────────────────── */
 
-/* ── Inter Font (Google Fonts) ───────────────────────────────────── */
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap");
-
-/* ── Base Reset ──────────────────────────────────────────────────── */
-@layer base {
-  *,
-  *::before,
-  *::after {
-    border-color: theme("colors.swiss.gray.300");
-  }
-
-  html {
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    font-family: "Inter", system-ui, sans-serif;
-  }
-
-  body {
-    @apply bg-swiss-white text-swiss-black text-body;
-  }
+:root {
+  --swiss-black: #1a1a1a;
+  --swiss-white: #fafafa;
+  --swiss-red: #d32f2f;
 }
 
-/* ── Utility Classes ─────────────────────────────────────────────── */
-@layer components {
-  /* Card — Swiss style: bordered, no shadow, no radius */
-  .card {
-    @apply border border-swiss-gray-300 bg-swiss-white p-md;
-  }
-
-  /* Status indicators */
-  .status-online {
-    @apply bg-swiss-black text-swiss-white;
-  }
-  .status-offline {
-    @apply bg-swiss-gray-200 text-swiss-gray-500;
-  }
-  .status-error {
-    @apply bg-swiss-red text-swiss-white;
-  }
-
-  /* Sidebar navigation */
-  .nav-item {
-    @apply flex items-center gap-md px-lg py-sm text-body
-           text-swiss-gray-500 hover:text-swiss-black
-           hover:bg-swiss-gray-100 transition-colors;
-  }
-  .nav-item-active {
-    @apply nav-item text-swiss-black bg-swiss-gray-100 border-r-2 border-swiss-black;
-  }
+* {
+  box-sizing: border-box;
 }
 
-/* ── Scrollbar ───────────────────────────────────────────────────── */
+body {
+  font-family: var(--font-space-grotesk), system-ui, sans-serif;
+  color: var(--swiss-black);
+  background-color: var(--swiss-white);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* 8px grid background — functional, not decorative */
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
+  background-size: 8px 8px;
+}
+
+/* ── Skeleton Animation ────────────────────────────────────────────────── */
+
+@keyframes skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.skeleton {
+  animation: skeleton-pulse 1.5s ease-in-out infinite;
+  background-color: #e5e5e5;
+  border-radius: 0;
+}
+
+/* ── Transition helpers ────────────────────────────────────────────────── */
+
+.transition-bg {
+  transition: background-color 0.15s ease;
+}
+.transition-all-fast {
+  transition: all 0.15s ease;
+}
+
+/* ── Card ──────────────────────────────────────────────────────────────── */
+
+.card {
+  @apply border border-swiss-gray-300 p-lg bg-swiss-white;
+}
+
+/* ── Status indicators ─────────────────────────────────────────────────── */
+
+.status-online {
+  @apply bg-swiss-black;
+}
+.status-offline {
+  @apply bg-swiss-gray-300;
+}
+.status-error {
+  @apply bg-swiss-red;
+}
+
+/* ── Navigation ────────────────────────────────────────────────────────── */
+
+.nav-item {
+  @apply flex items-center gap-md px-lg py-sm text-body text-swiss-gray-500
+         hover:text-swiss-black hover:bg-swiss-gray-100 transition-colors duration-150;
+}
+.nav-item-active {
+  @apply text-swiss-black bg-swiss-gray-100 border-r-2 border-swiss-black;
+}
+
+/* ── Table ─────────────────────────────────────────────────────────────── */
+
+table {
+  @apply w-full border-collapse;
+}
+thead th {
+  @apply text-caption text-swiss-gray-500 uppercase tracking-wider text-left px-md py-sm
+         border-b border-swiss-gray-300 bg-swiss-gray-100 font-medium;
+}
+tbody td {
+  @apply text-body text-swiss-black px-md py-sm border-b border-swiss-gray-200;
+}
+tbody tr:hover td {
+  @apply bg-swiss-gray-100;
+}
+tbody td {
+  transition: background-color 0.15s ease;
+}
+
+/* ── Scrollbar ─────────────────────────────────────────────────────────── */
+
 ::-webkit-scrollbar {
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: theme("colors.swiss.gray.100");
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: theme("colors.swiss.gray.300");
+  @apply bg-swiss-gray-300;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-swiss-gray-400;
 }
 
-/* ── Table ───────────────────────────────────────────────────────── */
-table {
-  border-collapse: collapse;
-  width: 100%;
+/* ── Screen-reader only (WCAG) ──────────────────────────────────────────── */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
-th {
-  @apply text-caption text-swiss-gray-500 text-left
-         border-b border-swiss-gray-300 pb-sm pt-md;
-}
-td {
-  @apply text-body py-sm border-b border-swiss-gray-200;
-}
-tr:hover td {
-  @apply bg-swiss-gray-100;
+
+/* ── Focus ring (keyboard navigation) ───────────────────────────────────── */
+
+.focus-ring:focus-visible {
+  outline: 2px solid var(--swiss-black);
+  outline-offset: 2px;
 }

@@ -1,21 +1,71 @@
 import React from "react";
+import { motion } from "framer-motion";
 
 interface StatsCardProps {
   label: string;
   value: string | number;
   sub?: string;
+  accent?: boolean;
+  trend?: "up" | "down" | "neutral";
+  trendValue?: string;
+  delay?: number;
 }
 
-export function StatsCard({ label, value, sub }: StatsCardProps) {
+/**
+ * Swiss Style stat card with optional red accent bar, trend indicator,
+ * and staggered entrance animation.
+ */
+export const StatsCard = React.memo(function StatsCard({
+  label,
+  value,
+  sub,
+  accent = false,
+  trend,
+  trendValue,
+  delay = 0,
+}: StatsCardProps) {
+  const trendColor =
+    trend === "up"
+      ? "text-swiss-red"
+      : trend === "down"
+        ? "text-swiss-gray-600"
+        : "text-swiss-gray-400";
+
+  const trendArrow =
+    trend === "up" ? "↑" : trend === "down" ? "↓" : "→";
+
   return (
-    <div className="card">
+    <motion.div
+      initial={{ y: 8, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.4, delay: delay / 1000, ease: "easeOut" }}
+      className="card flex flex-col relative"
+      role="region"
+      aria-label={`${label}: ${value}`}
+    >
+      {/* Red accent bar */}
+      {accent && (
+        <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-swiss-red" />
+      )}
+
       <p className="text-caption text-swiss-gray-500 mb-xs uppercase tracking-wider">
         {label}
       </p>
-      <p className="text-h1 text-swiss-black">{value}</p>
+
+      <div className="flex items-baseline gap-md">
+        <span className="text-[40px] leading-[1.1] font-bold text-swiss-black">
+          {value}
+        </span>
+        {trend && trendValue && (
+          <span className={`${trendColor} text-body-bold`}>
+            {trendArrow} {trendValue}
+          </span>
+        )}
+      </div>
+
       {sub && (
         <p className="text-caption text-swiss-gray-400 mt-xs">{sub}</p>
       )}
-    </div>
+    </motion.div>
   );
-}
+});

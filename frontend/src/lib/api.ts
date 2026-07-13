@@ -19,14 +19,15 @@ function authHeaders(): Record<string, string> {
 async function request<T>(
   method: string,
   path: string,
-  body?: unknown
+  body?: unknown,
+  signal?: AbortSignal
 ): Promise<T> {
   const url = `${API_BASE}${path}`;
   const headers: Record<string, string> = {
     ...authHeaders(),
   };
 
-  const options: RequestInit = { method, headers };
+  const options: RequestInit = { method, headers, signal };
 
   if (body !== undefined) {
     headers["Content-Type"] = "application/json";
@@ -58,6 +59,22 @@ async function request<T>(
   }
 
   return res.json() as Promise<T>;
+}
+
+/** Wraps `request` with a 10-second timeout using AbortSignal.timeout() */
+async function fetchWithTimeout<T>(
+  method: string,
+  path: string,
+  body?: unknown,
+  timeoutMs = 10_000
+): Promise<T> {
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+  try {
+    return await request<T>(method, path, body, controller.signal);
+  } finally {
+    clearTimeout(timeoutId);
+  }
 }
 
 /* ── Types ───────────────────────────────────────────────────────────────── */
@@ -167,7 +184,7 @@ export const authApi = {
     request<ApiKeyCreated>("POST", "/api/v1/auth/api-keys", { name }),
 
   deleteApiKey: (id: string) =>
-    request<void>("DELETE", `/api/v1/auth/api-keys/${id}`),
+    request<undefined>("DELETE", `/api/v1/auth/api-keys/${id}`),
 };
 
 /* ── Public API (no auth required) ───────────────────────────────────────── */
@@ -179,14 +196,18 @@ export const publicApi = {
 /* ── Protected API (auth required) ───────────────────────────────────────── */
 
 export const api = {
-  stats: () => request<StatsResponse>("GET", "/api/v1/stats"),
+  stats: (signal?: AbortSignal) =>
+    request<StatsResponse>("GET", "/api/v1/stats", undefined, signal),
 
-  listNodes: (params?: {
-    skip?: number;
-    limit?: number;
-    status?: string;
-    is_active?: boolean;
-  }) => {
+  listNodes: (
+    params?: {
+      skip?: number;
+      limit?: number;
+      status?: string;
+      is_active?: boolean;
+    },
+    signal?: AbortSignal
+  ) => {
     const qs = new URLSearchParams();
     if (params?.skip) qs.set("skip", String(params.skip));
     if (params?.limit) qs.set("limit", String(params.limit));
@@ -194,7 +215,12 @@ export const api = {
     if (params?.is_active !== undefined)
       qs.set("is_active", String(params.is_active));
     const q = qs.toString();
-    return request<NodeListResponse>("GET", `/api/v1/nodes${q ? `?${q}` : ""}`);
+    return request<NodeListResponse>(
+      "GET",
+      `/api/v1/nodes${q ? `?${q}` : ""}`,
+      undefined,
+      signal
+    );
   },
 
   getNode: (id: string) => request<NodeRead>("GET", `/api/v1/nodes/${id}`),
@@ -203,8 +229,10 @@ export const api = {
     request<NodeRead>("POST", "/api/v1/nodes", data),
 
   deleteNode: (id: string) =>
-    request<void>("DELETE", `/api/v1/nodes/${id}`),
+    request<undefined>("DELETE", `/api/v1/nodes/${id}`),
 
   heartbeat: (id: string, data: NodeHeartbeatPayload) =>
     request<NodeRead>("POST", `/api/v1/nodes/${id}/heartbeat`, data),
 };
+
+export { fetchWithTimeout };

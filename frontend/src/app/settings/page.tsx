@@ -2,7 +2,6 @@
 
 import React from "react";
 import Link from "next/link";
-import { Button } from "@/components/ui/Button";
 import { Key } from "lucide-react";
 
 export default function SettingsPage() {

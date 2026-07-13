@@ -1,21 +1,42 @@
-const WS_URL = process.env.NEXT_PUBLIC_WS_URL ?? "ws://127.0.0.1:8000/ws/v1/events";
+const WS_URL =
+  process.env.NEXT_PUBLIC_WS_URL ?? "ws://127.0.0.1:8000/ws/v1/events";
 
 export type EventHandler = (event: { type: string; data: unknown }) => void;
+export type WsConnectionStatus = "connecting" | "connected" | "disconnected";
 
 export class WsClient {
   private ws: WebSocket | null = null;
   private handlers = new Set<EventHandler>();
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private shouldReconnect = true;
+  private reconnectAttempts = 0;
+  private status: WsConnectionStatus = "disconnected";
+  private statusListeners = new Set<(s: WsConnectionStatus) => void>();
+
+  private setStatus(s: WsConnectionStatus) {
+    this.status = s;
+    this.statusListeners.forEach((fn) => fn(s));
+  }
+
+  getConnectionStatus(): WsConnectionStatus {
+    return this.status;
+  }
+
+  onStatusChange(cb: (s: WsConnectionStatus) => void) {
+    this.statusListeners.add(cb);
+    return () => this.statusListeners.delete(cb);
+  }
 
   connect() {
     if (this.ws?.readyState === WebSocket.OPEN) return;
 
     this.shouldReconnect = true;
+    this.setStatus("connecting");
     this.ws = new WebSocket(WS_URL);
 
     this.ws.onopen = () => {
-      console.log("[WS] Connected");
+      this.reconnectAttempts = 0;
+      this.setStatus("connected");
     };
 
     this.ws.onmessage = (event) => {
@@ -28,7 +49,7 @@ export class WsClient {
     };
 
     this.ws.onclose = () => {
-      console.log("[WS] Disconnected");
+      this.setStatus("disconnected");
       this.scheduleReconnect();
     };
 
@@ -42,6 +63,7 @@ export class WsClient {
     if (this.reconnectTimer) clearTimeout(this.reconnectTimer);
     this.ws?.close();
     this.ws = null;
+    this.setStatus("disconnected");
   }
 
   onEvent(handler: EventHandler) {
@@ -51,7 +73,12 @@ export class WsClient {
 
   private scheduleReconnect() {
     if (!this.shouldReconnect) return;
-    this.reconnectTimer = setTimeout(() => this.connect(), 3000);
+    const delay = Math.min(
+      1000 * Math.pow(2, this.reconnectAttempts),
+      30000
+    );
+    this.reconnectAttempts++;
+    this.reconnectTimer = setTimeout(() => this.connect(), delay);
   }
 }
 
