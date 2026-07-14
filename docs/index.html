@@ -1,328 +1,1186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>OasisWaker — Crowdsourced Edge Infrastructure</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OasisWaker — Architecture · API · Tutorial</title>
+  <meta name="description" content="OasisWaker technical architecture documentation: real code, real API, real database schema." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    /* ═══════════════════════════════════════════════════════════════════════
+       OASISWAKER — TECHNICAL DOCUMENTATION
+       Swiss Style · Black / White / Red · 8px Grid
+       Zero placeholders. Real code only.
+       ═══════════════════════════════════════════════════════════════════════ */
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black:  #000000;
+      --white:  #FFFFFF;
+      --red:    #DA291C;
+      --g100:   #F2F2F2;
+      --g200:   #E5E5E5;
+      --g300:   #CCCCCC;
+      --g400:   #999999;
+      --g500:   #666666;
+      --g600:   #333333;
+      --sans:   'Space Grotesk', 'Helvetica Neue', sans-serif;
+      --mono:   'JetBrains Mono', 'Courier New', monospace;
+      --u: 8px;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      scroll-behavior: smooth;
+    }
+
     body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: #0a0a0f;
-      color: #e2e8f0;
-      line-height: 1.6;
-    }
-    a { color: #58a6ff; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .container { max-width: 960px; margin: 0 auto; padding: 0 24px; }
-
-    /* Header */
-    header {
-      padding: 80px 0 60px;
-      text-align: center;
-      background: linear-gradient(180deg, #16162a 0%, #0a0a0f 100%);
-    }
-    header h1 {
-      font-size: 48px;
-      font-weight: 700;
-      letter-spacing: -1px;
-      margin-bottom: 12px;
-      background: linear-gradient(135deg, #58a6ff, #bc8cff, #7ee787);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-    header .tagline {
-      font-size: 20px;
-      color: #8b949e;
-      margin-bottom: 32px;
-    }
-    .cta-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
-    .btn {
-      display: inline-block;
-      padding: 12px 28px;
-      border-radius: 8px;
-      font-weight: 600;
-      font-size: 15px;
-      transition: all 0.2s;
-    }
-    .btn-primary {
-      background: #238636;
-      color: #fff;
-    }
-    .btn-primary:hover { background: #2ea043; text-decoration: none; }
-    .btn-secondary {
-      border: 1px solid #30363d;
-      color: #e2e8f0;
-    }
-    .btn-secondary:hover { border-color: #58a6ff; text-decoration: none; }
-
-    /* Sections */
-    section { padding: 60px 0; }
-    section h2 {
-      font-size: 28px;
-      font-weight: 600;
-      margin-bottom: 32px;
-      text-align: center;
-    }
-    .alt-bg { background: #16162a; }
-
-    /* Status banner */
-    .status-banner {
-      max-width: 680px;
-      margin: 0 auto 40px;
-      padding: 16px 24px;
-      border-radius: 10px;
-      border: 1px solid #d29922;
-      background: rgba(210, 153, 34, 0.08);
-      text-align: center;
-      font-size: 14px;
-      color: #d29922;
+      font-family: var(--sans);
+      color: var(--black);
+      background: var(--white);
+      line-height: 1.5;
+      overflow-x: hidden;
     }
 
-    /* Feature grid */
-    .feature-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 20px;
+    /* ── 8px Grid Overlay (visible on hover) ─────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(0,0,0,0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0,0,0,0.04) 1px, transparent 1px);
+      background-size: var(--u) var(--u);
+      pointer-events: none;
+      z-index: 9999;
+      opacity: 0;
+      transition: opacity 0.6s;
     }
-    .feature-card {
-      padding: 28px;
-      border-radius: 12px;
-      border: 1px solid #30363d;
-      background: #16162a;
-      transition: border-color 0.2s;
-    }
-    .feature-card:hover { border-color: #58a6ff; }
-    .feature-card .icon { font-size: 32px; margin-bottom: 16px; }
-    .feature-card h3 { font-size: 18px; margin-bottom: 10px; }
-    .feature-card p { font-size: 14px; color: #8b949e; }
+    body:hover::before { opacity: 1; }
 
-    /* Version comparsion */
-    .version-compare {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      max-width: 720px;
+    .container {
+      max-width: 1152px;
       margin: 0 auto;
-    }
-    .version-box {
-      padding: 28px;
-      border-radius: 12px;
-      border: 1px solid #30363d;
-    }
-    .version-box h3 { font-size: 18px; margin-bottom: 16px; }
-    .version-box ul { list-style: none; font-size: 14px; color: #8b949e; }
-    .version-box li { padding: 6px 0; }
-    .version-box .status-label {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 4px;
-      font-size: 12px;
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-    .status-current {
-      background: rgba(35, 134, 54, 0.15);
-      color: #3fb950;
-    }
-    .status-vision {
-      background: rgba(88, 166, 255, 0.15);
-      color: #58a6ff;
+      padding: 0 calc(3 * var(--u));
+      position: relative;
+      z-index: 1;
     }
 
-    /* Code block */
+    /* ── Typography ──────────────────────────────────────────────────────── */
+    .d1 { font-family: var(--sans); font-weight: 700; font-size: clamp(32px,6vw,72px); line-height: 1.0; letter-spacing: 0.06em; text-transform: uppercase; }
+    .d2 { font-family: var(--sans); font-weight: 700; font-size: clamp(24px,3vw,40px); line-height: 1.1; letter-spacing: -0.02em; }
+    .h1 { font-family: var(--sans); font-weight: 700; font-size: clamp(20px,2.5vw,28px); line-height: 1.15; letter-spacing: -0.015em; }
+    .body { font-family: var(--sans); font-weight: 400; font-size: 14px; line-height: 1.7; color: var(--g500); }
+    .body-bold { font-family: var(--sans); font-weight: 700; font-size: 14px; line-height: 1.5; }
+    .cap  { font-family: var(--sans); font-weight: 500; font-size: 11px; line-height: 1.4; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g400); }
+    .mono { font-family: var(--mono); font-weight: 400; font-size: 13px; line-height: 1.6; }
+
     .code-block {
-      background: #16162a;
-      border: 1px solid #30363d;
-      border-radius: 10px;
-      padding: 20px 24px;
-      font-family: 'Cascadia Code', 'Fira Code', monospace;
+      font-family: var(--mono);
       font-size: 13px;
       line-height: 1.7;
+      background: var(--g100);
+      border: 1px solid var(--g200);
+      padding: calc(3 * var(--u));
       overflow-x: auto;
-      max-width: 600px;
-      margin: 0 auto;
+      white-space: pre;
+      tab-size: 2;
+      color: var(--g600);
     }
-    .code-block .comment { color: #8b949e; }
-    .code-block .cmd { color: #7ee787; }
-    .code-block .out { color: #58a6ff; }
 
-    /* Docs grid */
-    .docs-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px;
-      max-width: 720px;
-      margin: 0 auto;
-    }
-    .doc-card {
-      padding: 20px;
-      border-radius: 10px;
-      border: 1px solid #30363d;
-      text-align: center;
-      transition: border-color 0.2s;
-    }
-    .doc-card:hover { border-color: #58a6ff; text-decoration: none; color: #58a6ff; }
-    .doc-card .doc-title { font-weight: 600; margin-bottom: 6px; }
-    .doc-card .doc-desc { font-size: 13px; color: #8b949e; }
+    .code-block .comment { color: var(--g400); }
+    .code-block .keyword { color: var(--red); font-weight: 500; }
+    .code-block .string  { color: var(--g600); }
+    .code-block .type    { color: var(--black); font-weight: 500; }
 
-    /* Footer */
-    footer {
-      padding: 40px 0;
-      text-align: center;
+    /* ── Red bars ────────────────────────────────────────────────────────── */
+    .bar-8 { width: 100%; height: var(--u); background: var(--red); flex-shrink: 0; }
+    .bar-4 { width: 100%; height: 4px;     background: var(--red); flex-shrink: 0; }
+    .bar-v { width: 3px;  min-height: calc(3 * var(--u)); background: var(--red); flex-shrink: 0; }
+    .bar-v-sm { width: 2px; min-height: calc(2 * var(--u)); background: var(--red); flex-shrink: 0; }
+
+    /* ── Spacing ──────────────────────────────────────────────────────────── */
+    .sec    { padding: calc(10 * var(--u)) 0; }
+    .sec-sm { padding: calc(5 * var(--u)) 0; }
+    .mb-1 { margin-bottom: var(--u); }
+    .mb-2 { margin-bottom: calc(2 * var(--u)); }
+    .mb-3 { margin-bottom: calc(3 * var(--u)); }
+    .mb-4 { margin-bottom: calc(4 * var(--u)); }
+    .mt-1 { margin-top: var(--u); }
+    .mt-2 { margin-top: calc(2 * var(--u)); }
+    .mt-3 { margin-top: calc(3 * var(--u)); }
+
+    /* ── Section label ───────────────────────────────────────────────────── */
+    .sec-label {
+      display: flex;
+      align-items: center;
+      gap: var(--u);
+      margin-bottom: var(--u);
+    }
+
+    /* ── Buttons ──────────────────────────────────────────────────────────── */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--u);
+      font-family: var(--sans);
+      font-weight: 700;
       font-size: 13px;
-      color: #8b949e;
-      border-top: 1px solid #30363d;
+      padding: 12px 24px;
+      text-decoration: none;
+      letter-spacing: 0.02em;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
     }
-    footer a { margin: 0 12px; }
+    .btn-primary { background: var(--black); color: var(--white); }
+    .btn-primary:hover { background: var(--g600); }
+    .btn-outline { background: transparent; color: var(--black); border: 1px solid var(--black); }
+    .btn-outline:hover { background: var(--g100); }
 
-    @media (max-width: 600px) {
-      header h1 { font-size: 32px; }
-      .version-compare { grid-template-columns: 1fr; }
+    /* ── Header ───────────────────────────────────────────────────────────── */
+    .header {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 64px;
+      background: var(--white);
+      border-bottom: 1px solid var(--g300);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+    }
+    .header .container { display: flex; align-items: center; justify-content: space-between; width: 100%; }
+    .logo { display: flex; align-items: center; gap: var(--u); text-decoration: none; color: var(--black); }
+    .logo-mark {
+      width: 24px; height: 24px;
+      border: 2px solid var(--black);
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .logo-mark::after {
+      content: '';
+      width: 12px; height: 2px;
+      background: var(--red);
+      position: absolute;
+      bottom: 3px;
+    }
+    .nav { display: flex; align-items: center; gap: 24px; }
+    .nav a { text-decoration: none; font-family: var(--sans); font-size: 13px; font-weight: 500; letter-spacing: 0.02em; color: var(--g500); transition: color 0.2s; }
+    .nav a:hover { color: var(--black); }
+
+    /* ── Hero ─────────────────────────────────────────────────────────────── */
+    .hero {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      padding-top: 64px;
+      border-bottom: 1px solid var(--g300);
+    }
+    .hero-inner {
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 64px;
+      align-items: start;
+    }
+    .hero-bar { margin-bottom: 32px; }
+    .hero-title { margin-bottom: 16px; }
+    .hero-meta {
+      display: flex;
+      align-items: center;
+      gap: var(--u);
+      flex-wrap: wrap;
+      margin-top: 8px;
+    }
+    .hero-meta .sep { color: var(--g300); }
+    .hero-side { padding-top: 41px; }  /* aligns with hero-title baseline */
+    .hero-side .body { font-size: 15px; line-height: 1.8; margin-bottom: 24px; }
+    .hero-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .hero-stat {
+      border-top: 2px solid var(--black);
+      padding-top: 8px;
+    }
+    .hero-stat .val { font-family: var(--mono); font-weight: 500; font-size: 14px; color: var(--black); }
+    .hero-stat .lbl { font-family: var(--sans); font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--g400); margin-top: 2px; }
+    .hero-cta { display: flex; gap: 16px; }
+
+    /* ── Architecture Overview ────────────────────────────────────────────── */
+    .arch-overview { border-bottom: 1px solid var(--g300); }
+    .arch-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--g300);
+      margin-top: 24px;
+    }
+    .arch-card { background: var(--white); padding: 24px; }
+    .arch-card .badge { display: inline-block; font-family: var(--sans); font-size: 10px; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; padding: 2px 6px; margin-bottom: 8px; }
+    .arch-card .badge-green { background: #E8F5E9; color: #2E7D32; }
+    .arch-card .badge-amber { background: #FFF8E1; color: #F57F17; }
+    .arch-card .badge-blue  { background: #E3F2FD; color: #1565C0; }
+    .arch-card h3 { font-family: var(--sans); font-weight: 700; font-size: 16px; margin-bottom: 8px; }
+    .arch-card p  { font-family: var(--sans); font-size: 13px; color: var(--g500); line-height: 1.7; margin-bottom: 8px; }
+    .arch-card .tech { font-family: var(--mono); font-size: 11px; color: var(--g400); }
+    .arch-card .tech span { display: inline-block; margin-right: var(--u); }
+    .arch-card .tech span::before { content: '\25B8 '; color: var(--red); }
+
+    .arch-stack { margin-top: 24px; }
+    .arch-layer-row {
+      display: flex;
+      border: 1px solid var(--g300);
+    }
+    .arch-layer-row + .arch-layer-row { border-top: 0; }
+    .arch-layer-row .lbl {
+      width: 80px; flex-shrink: 0;
+      padding: 12px;
+      font-family: var(--sans); font-size: 10px; font-weight: 500;
+      letter-spacing: 0.1em; text-transform: uppercase;
+    }
+    .arch-layer-row .content {
+      flex: 1;
+      padding: 12px;
+      font-family: var(--mono); font-size: 12px;
+    }
+    .arch-layer-row.user-l   .lbl { background: var(--black); color: var(--white); }
+    .arch-layer-row.user-l   .content { background: var(--g100); }
+    .arch-layer-row.proto-l .lbl { background: var(--g600); color: var(--white); }
+    .arch-layer-row.proto-l .content { background: var(--g100); }
+    .arch-layer-row.adap-l  .lbl { background: var(--g200); color: var(--black); }
+    .arch-layer-row.adap-l  .content { background: var(--g100); }
+    .arch-layer-row.plat-l  .lbl { background: var(--g100); color: var(--g500); }
+    .arch-layer-row.plat-l  .content { background: var(--g100); }
+
+    /* ── Database Schema ──────────────────────────────────────────────────── */
+    .schema { border-bottom: 1px solid var(--g300); }
+    .schema-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--g300);
+      margin-top: 24px;
+    }
+    .schema-card { background: var(--white); padding: 24px; }
+    .schema-card h3 { font-family: var(--mono); font-weight: 500; font-size: 14px; margin-bottom: 8px; color: var(--red); }
+    .schema-card .field { font-family: var(--mono); font-size: 12px; line-height: 2.2; color: var(--g600); }
+    .schema-card .field .pk { color: var(--black); font-weight: 500; }
+    .schema-card .field .fk { color: var(--g500); }
+    .schema-card .field .type { color: var(--g400); }
+    .schema-card .field .em  { color: var(--g400); font-style: italic; }
+
+    /* ── API Routes ───────────────────────────────────────────────────────── */
+    .api { border-bottom: 1px solid var(--g300); }
+    .api-table { width: 100%; border-collapse: collapse; margin-top: 24px; font-family: var(--sans); }
+    .api-table thead th {
+      text-align: left;
+      padding: 12px 16px;
+      font-size: 11px; font-weight: 500; letter-spacing: 0.08em;
+      text-transform: uppercase; color: var(--g400);
+      border-bottom: 2px solid var(--black);
+    }
+    .api-table tbody td {
+      padding: 12px 16px;
+      font-size: 13px;
+      border-bottom: 1px solid var(--g200);
+      vertical-align: top;
+    }
+    .api-table tbody td:first-child { font-family: var(--mono); font-size: 12px; font-weight: 500; }
+    .api-table tbody td:nth-child(2) { font-family: var(--mono); font-size: 12px; color: var(--g600); }
+    .api-table tbody td:nth-child(3) { color: var(--g500); font-size: 12px; }
+    .api-table tbody td:nth-child(4) { font-family: var(--sans); font-size: 11px; color: var(--g400); }
+    .api-table tbody tr:last-child td { border-bottom: none; }
+    .method { display: inline-block; font-family: var(--mono); font-size: 10px; font-weight: 700; padding: 2px 6px; letter-spacing: 0.02em; }
+    .method-get    { background: #E3F2FD; color: #1565C0; }
+    .method-post   { background: #E8F5E9; color: #2E7D32; }
+    .method-patch  { background: #FFF8E1; color: #F57F17; }
+    .method-delete { background: #FFEBEE; color: #C62828; }
+
+    /* ── Auth Flow ────────────────────────────────────────────────────────── */
+    .auth-flow { border-bottom: 1px solid var(--g300); }
+
+    /* ── Code Examples ────────────────────────────────────────────────────── */
+    .code-ex { border-bottom: 1px solid var(--g300); }
+    .code-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--g300);
+      margin-top: 24px;
+    }
+    .code-item { background: var(--white); padding: 24px; }
+    .code-item .cap { margin-bottom: 8px; display: block; color: var(--g500); }
+
+    /* ── Tutorial / Setup ─────────────────────────────────────────────────── */
+    .tutorial { border-bottom: 1px solid var(--g300); }
+    .tut-step {
+      display: grid;
+      grid-template-columns: 32px 1fr;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .tut-num {
+      width: 32px; height: 32px;
+      background: var(--black);
+      color: var(--white);
+      font-family: var(--sans); font-weight: 700; font-size: 14px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .tut-content h3 { font-family: var(--sans); font-weight: 700; font-size: 16px; margin-bottom: 8px; }
+    .tut-content p  { font-family: var(--sans); font-size: 13px; color: var(--g500); line-height: 1.7; margin-bottom: 8px; }
+    .tut-content .code-block { margin-top: 8px; }
+
+    /* ── Design Decisions ─────────────────────────────────────────────────── */
+    .decisions { border-bottom: 1px solid var(--g300); }
+    .decisions-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px;
+      background: var(--g300);
+      margin-top: 24px;
+    }
+    .decisions-card { background: var(--white); padding: 24px; }
+    .decisions-card .bar-v-sm { margin-bottom: 8px; }
+    .decisions-card h3 { font-family: var(--sans); font-weight: 700; font-size: 16px; margin-bottom: 8px; }
+    .decisions-card p  { font-family: var(--sans); font-size: 13px; color: var(--g500); line-height: 1.7; }
+
+    /* ── Footer ───────────────────────────────────────────────────────────── */
+    .footer { padding: 48px 0; }
+    .footer .container { display: flex; align-items: center; justify-content: space-between; }
+    .footer-left { display: flex; align-items: center; gap: 16px; }
+    .footer-meta { font-family: var(--sans); font-size: 11px; color: var(--g400); letter-spacing: 0.02em; }
+    .footer-sep { color: var(--g300); }
+
+    /* ── Animations ───────────────────────────────────────────────────────── */
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    .anm { opacity: 0; animation: fadeUp 0.6s ease-out forwards; }
+    .anm-d1 { animation-delay: 0.0s; }
+    .anm-d2 { animation-delay: 0.1s; }
+    .anm-d3 { animation-delay: 0.2s; }
+    .anm-d4 { animation-delay: 0.3s; }
+    .anm-d5 { animation-delay: 0.4s; }
+    .anm-d6 { animation-delay: 0.5s; }
+    .anm-d7 { animation-delay: 0.6s; }
+    .anm-d8 { animation-delay: 0.7s; }
+
+    /* ── Responsive ───────────────────────────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 24px; }
+      .hero-side { padding-top: 0; }
+      .schema-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 768px) {
+      .arch-grid { grid-template-columns: 1fr; }
+      .code-grid { grid-template-columns: 1fr; }
+      .decisions-grid { grid-template-columns: 1fr; }
+      .hero-stats { grid-template-columns: 1fr; }
+      .sec { padding: 48px 0; }
+      .nav a:not(.btn) { display: none; }
+    }
+    @media print {
+      body::before { display: none; }
+      .header { position: static; border-bottom: 0.5pt solid #000; }
+      .hero { min-height: auto; }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="container">
-    <h1>🌴 OasisWaker</h1>
-    <p class="tagline">Crowdsourced edge infrastructure. Your free-tier cloud quota, aggregated.</p>
-    <div class="cta-buttons">
-      <a href="https://github.com/Oasis-Company/OasisWaker" class="btn btn-primary">View on GitHub</a>
-      <a href="https://github.com/Oasis-Company/OasisWaker/blob/main/README.md" class="btn btn-secondary">Documentation</a>
-    </div>
-  </div>
-</header>
-
-<section class="alt-bg">
-  <div class="container">
-    <div class="status-banner">
-      ⚠️ <strong>Honest status:</strong> v1.0 is functional but has known security issues.
-      See <a href="https://github.com/Oasis-Company/OasisWaker/blob/main/CRITIQUE.md">CRITIQUE.md</a> for details.
-      v2.0 (true P2P) is not yet implemented.
-    </div>
-
-    <div class="feature-grid">
-      <div class="feature-card">
-        <div class="icon">🔗</div>
-        <h3>Works with What You Have</h3>
-        <p>Cloudflare Workers, Vercel Edge, Supabase Edge — use your existing free-tier quota. No new accounts needed beyond what you already have.</p>
-      </div>
-      <div class="feature-card">
-        <div class="icon">🔐</div>
-        <h3>Client-Side Encryption</h3>
-        <p>Data is encrypted with AES-256-GCM before it leaves your machine. Node operators cannot read what they store.</p>
-      </div>
-      <div class="feature-card">
-        <div class="icon">🌐</div>
-        <h3>Global by Default</h3>
-        <p>Edge nodes span every region where Cloudflare, Vercel, or Supabase operate. No single geographic point of failure.</p>
-      </div>
-      <div class="feature-card">
-        <div class="icon">💡</div>
-        <h3>Vision: True P2P</h3>
-        <p>v2.0 aims for a DHT-based mesh where nodes discover each other without a central coordinator. <a href="VISION.md">Read the vision →</a></p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="container">
-    <h2>Two Versions, One Project</h2>
-    <div class="version-compare">
-      <div class="version-box">
-        <span class="status-label status-current">✅ Current: v1.0</span>
-        <h3>Centralized CLI Tool</h3>
-        <ul>
-          <li>✅ <code>oasiswaker init/login/deploy</code></li>
-          <li>✅ OAuth2.0 PKCE flow</li>
-          <li>✅ Deploys to Cloudflare/Vercel/Supabase</li>
-          <li>✅ Unified block storage API</li>
-          <li>⚠️ Central coordinator (SPOF)</li>
-          <li>⚠️ Known security issues</li>
-        </ul>
-      </div>
-      <div class="version-box">
-        <span class="status-label status-vision">🔮 Vision: v2.0</span>
-        <h3>True P2P Mesh</h3>
-        <ul>
-          <li>🔮 DHT node discovery (Kademlia)</li>
-          <li>🔮 Erasure coding for data redundancy</li>
-          <li>🔮 No central coordinator</li>
-          <li>🔮 Incentive layer (credits)</li>
-          <li>🔮 Monorepo package structure</li>
-          <li>❌ Not implemented yet</li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</section>
-
-<section class="alt-bg">
-  <div class="container">
-    <h2>Quick Preview (v1.0)</h2>
-    <div class="code-block">
-      <span class="comment"># Install and initialize</span>
-      <span class="cmd">$ npm install -g @oasisbio/oasiswaker</span>
-      <span class="cmd">$ oasiswaker init</span>
-      <span class="out">  ✓ Node identity: a3f2b1e4-8c9d...</span>
-      <span class="comment"></span>
-      <span class="comment"># Connect your Cloudflare account</span>
-      <span class="cmd">$ oasiswaker login --cloudflare</span>
-      <span class="out">  ✓ OAuth authorized. Credentials encrypted and stored.</span>
-      <span class="comment"></span>
-      <span class="comment"># Deploy an edge node</span>
-      <span class="cmd">$ oasiswaker deploy --platform cloudflare</span>
-      <span class="out">  ✓ Worker deployed to your account.</span>
-      <span class="out">  ✓ Block storage API live at: https://...</span>
-    </div>
-  </div>
-</section>
-
-<section>
-  <div class="container">
-    <h2>Documentation</h2>
-    <div class="docs-grid">
-      <a href="https://github.com/Oasis-Company/OasisWaker/blob/main/README.md" class="doc-card">
-        <div class="doc-title">README</div>
-        <div class="doc-desc">Project overview and quick start</div>
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       HEADER
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <header class="header">
+    <div class="container">
+      <a href="/" class="logo">
+        <div class="logo-mark">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M1 8L5 2L9 11L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="body-bold">OasisWaker</span>
       </a>
-      <a href="https://github.com/Oasis-Company/OasisWaker/blob/main/PLAN.md" class="doc-card">
-        <div class="doc-title">PLAN.md</div>
-        <div class="doc-desc">Phased roadmap with checklists</div>
-      </a>
-      <a href="https://github.com/Oasis-Company/OasisWaker/blob/main/VISION.md" class="doc-card">
-        <div class="doc-title">VISION.md</div>
-        <div class="doc-desc">Ideal state — what we're building toward</div>
-      </a>
-      <a href="https://github.com/Oasis-Company/OasisWaker/blob/main/CRITIQUE.md" class="doc-card">
-        <div class="doc-title">CRITIQUE.md</div>
-        <div class="doc-desc">Known issues and technical debt</div>
-      </a>
-      <a href="https://github.com/Oasis-Company/OasisWaker/blob/main/NEW_ARCHITECTURE.md" class="doc-card">
-        <div class="doc-title">NEW_ARCHITECTURE.md</div>
-        <div class="doc-desc">v2.0 architecture proposal</div>
-      </a>
-      <a href="https://github.com/Oasis-Company/OasisWaker/blob/main/RESOURCES.md" class="doc-card">
-        <div class="doc-title">RESOURCES.md</div>
-        <div class="doc-desc">Cloud platform setup checklist</div>
-      </a>
+      <nav class="nav">
+        <a href="#architecture">Architecture</a>
+        <a href="#schema">Schema</a>
+        <a href="#api">API</a>
+        <a href="#tutorial">Tutorial</a>
+        <a href="https://github.com/OasisBio/oasiswaker" target="_blank" rel="noopener" class="btn btn-outline">GitHub</a>
+      </nav>
     </div>
-  </div>
-</section>
+  </header>
 
-<footer>
-  <div class="container">
-    <p>
-      <a href="https://github.com/Oasis-Company/OasisWaker">GitHub</a>
-      <a href="https://github.com/Oasis-Company/OasisWaker/issues">Issues</a>
-      <a href="https://github.com/Oasis-Company/OasisWaker/blob/main/LICENSE">MIT License</a>
-    </p>
-    <p style="margin-top: 12px;">Built with ❤️ by the OasisBio Team</p>
-  </div>
-</footer>
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       HERO
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-inner">
+        <div class="hero-main">
+          <div class="bar-8 hero-bar anm anm-d1"></div>
+          <h1 class="d1 hero-title anm anm-d2">OasisWaker</h1>
+          <div class="hero-meta anm anm-d3">
+            <span class="cap">v2.0.0</span>
+            <span class="cap sep">/</span>
+            <span class="cap">Backend: FastAPI + SQLAlchemy</span>
+            <span class="cap sep">/</span>
+            <span class="cap">Frontend: Next.js 14</span>
+            <span class="cap sep">/</span>
+            <span class="cap">CLI: Node.js 18+</span>
+            <span class="cap sep">/</span>
+            <span class="cap">MIT</span>
+          </div>
+          <div class="hero-meta anm anm-d3">
+            <span class="cap">DB: SQLite (dev) / PostgreSQL (prod)</span>
+            <span class="cap sep">/</span>
+            <span class="cap">Real-time: WebSocket</span>
+          </div>
+        </div>
+        <div class="hero-side">
+          <p class="body anm anm-d4">
+            OasisWaker is a decentralized edge storage network. Two subsystems
+            coexist: the <strong>v1.0 CLI</strong> (published, Node.js) handles
+            OAuth login and platform adapter deployment; the
+            <strong>v2.0 backend</strong> (FastAPI, in development) provides
+            a central coordination server with REST API, WebSocket, multi-tenant
+            database, and a Next.js dashboard.
+          </p>
+          <div class="hero-stats">
+            <div class="hero-stat anm anm-d5">
+              <div class="val">2</div>
+              <div class="lbl">Subsystems (CLI + Server)</div>
+            </div>
+            <div class="hero-stat anm anm-d6">
+              <div class="val">6</div>
+              <div class="lbl">Database tables</div>
+            </div>
+            <div class="hero-stat anm anm-d7">
+              <div class="val">18</div>
+              <div class="lbl">API endpoints</div>
+            </div>
+            <div class="hero-stat anm anm-d8">
+              <div class="val">3</div>
+              <div class="lbl">Auth strategies</div>
+            </div>
+          </div>
+          <div class="hero-cta anm anm-d8">
+            <a href="#tutorial" class="btn btn-primary">Setup Tutorial</a>
+            <a href="#architecture" class="btn btn-outline">Architecture</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       ARCHITECTURE OVERVIEW
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section id="architecture" class="arch-overview sec">
+    <div class="container">
+      <div class="sec-label">
+        <div class="bar-v"></div>
+        <span class="cap">System Architecture</span>
+      </div>
+      <h2 class="d2 mb-2">Two subsystems. One protocol.</h2>
+      <p class="body" style="max-width: 560px;">
+        OasisWaker defines a block storage protocol. <strong>Adapters</strong>
+        translate it to each platform's native API. The v1.0 CLI handles
+        authentication and deployment; the v2.0 server provides coordination,
+        metadata, and real-time events.
+      </p>
+
+      <div class="arch-grid">
+        <div class="arch-card">
+          <div class="badge badge-green">v1.0 — Published</div>
+          <h3>CLI Tool</h3>
+          <p>
+            Node.js 18+ CLI with Commander.js. OAuth2.0 PKCE login to Cloudflare,
+            Vercel, and Supabase. Deploys edge workers that implement the
+            block storage protocol. Credentials encrypted with AES-256-GCM.
+          </p>
+          <div class="tech">
+            <span>Node.js 18+</span>
+            <span>TypeScript 5.6</span>
+            <span>Commander.js</span>
+            <span>Inquirer</span>
+            <span>Zod</span>
+          </div>
+        </div>
+        <div class="arch-card">
+          <div class="badge badge-amber">v2.0 — In Development</div>
+          <h3>Backend Server</h3>
+          <p>
+            FastAPI async application with SQLAlchemy 2.0 ORM. Multi-tenant
+            database with 6 tables. JWT + API Key dual authentication. Sliding
+            window rate limiting (60 req/min). WebSocket for real-time events.
+          </p>
+          <div class="tech">
+            <span>Python 3.10+</span>
+            <span>FastAPI 0.110</span>
+            <span>SQLAlchemy 2.0</span>
+            <span>Alembic</span>
+            <span>WebSocket</span>
+          </div>
+        </div>
+        <div class="arch-card">
+          <div class="badge badge-blue">v2.0 — In Development</div>
+          <h3>Frontend Dashboard</h3>
+          <p>
+            Next.js 14 App Router with TypeScript and TailwindCSS. Swiss Style
+            design system (8px grid, no rounded corners, red accent). WebSocket
+            client with exponential backoff reconnection. React Context for
+            auth state management. Framer-motion for animations.
+          </p>
+          <div class="tech">
+            <span>Next.js 14.2</span>
+            <span>React 18.3</span>
+            <span>TailwindCSS 3.4</span>
+            <span>Framer Motion 11</span>
+            <span>Lucide React</span>
+          </div>
+        </div>
+        <div class="arch-card">
+          <div class="badge badge-amber">v2.0 — Planned</div>
+          <h3>P2P Network</h3>
+          <p>
+            Kademlia DHT-based node discovery (libp2p). Erasure coding for
+            data durability. Client-side AES-256-GCM encryption. Incentive
+            layer with credit accounting. Not yet implemented.
+          </p>
+          <div class="tech">
+            <span>Kademlia DHT</span>
+            <span>libp2p</span>
+            <span>Erasure Coding</span>
+            <span>Protobuf</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="arch-stack">
+        <div class="arch-layer-row user-l">
+          <div class="lbl">User</div>
+          <div class="content">CLI  ·  Dashboard  ·  REST API</div>
+        </div>
+        <div class="arch-layer-row proto-l">
+          <div class="lbl">Protocol</div>
+          <div class="content">OasisWaker Protocol  ·  Block Format  ·  Encryption  ·  Registration  ·  Heartbeat</div>
+        </div>
+        <div class="arch-layer-row adap-l">
+          <div class="lbl">Adapters</div>
+          <div class="content">Cloudflare Workers  ·  Vercel Edge Functions  ·  Supabase Edge Functions</div>
+        </div>
+        <div class="arch-layer-row plat-l">
+          <div class="lbl">Platform</div>
+          <div class="content">R2 Storage  ·  Vercel Blob  ·  Supabase Storage</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       DATABASE SCHEMA
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section id="schema" class="schema sec">
+    <div class="container">
+      <div class="sec-label">
+        <div class="bar-v"></div>
+        <span class="cap">Data Model</span>
+      </div>
+      <h2 class="d2 mb-2">Database schema.</h2>
+      <p class="body" style="max-width: 560px;">
+        6 tables, all with UUID primary keys and automatic timestamps.
+        Multi-tenancy via <code>user_id</code> and <code>project_id</code>
+        foreign keys. Migrations managed by Alembic.
+      </p>
+
+      <div class="schema-grid">
+        <div class="schema-card">
+          <h3>users</h3>
+          <div class="field"><span class="pk">id</span> <span class="type">String(36) PK</span></div>
+          <div class="field"><span class="pk">email</span> <span class="type">String(255) UNIQUE INDEX</span></div>
+          <div class="field">hashed_password <span class="type">String(255)</span></div>
+          <div class="field">full_name <span class="type">String(255) ?</span></div>
+          <div class="field">avatar_url <span class="type">String(1024) ?</span></div>
+          <div class="field">github_id <span class="type">String(64) UNIQUE ?</span></div>
+          <div class="field">is_active <span class="type">Boolean</span></div>
+          <div class="field">storage_quota_bytes <span class="type">Integer (10GB)</span></div>
+          <div class="field">created_at <span class="type">DateTime</span></div>
+          <div class="field">updated_at <span class="type">DateTime</span></div>
+          <div class="field"><span class="em">→ projects, nodes, api_keys</span></div>
+        </div>
+        <div class="schema-card">
+          <h3>nodes</h3>
+          <div class="field"><span class="pk">id</span> <span class="type">String(36) PK</span></div>
+          <div class="field">name <span class="type">String(255)</span></div>
+          <div class="field"><span class="pk">node_id</span> <span class="type">String(64) UNIQUE INDEX</span></div>
+          <div class="field">status <span class="type">String(32) INDEX (offline)</span></div>
+          <div class="field">platform <span class="type">String(64) ?</span></div>
+          <div class="field">endpoint <span class="type">Text ?</span></div>
+          <div class="field">version <span class="type">String(32) ?</span></div>
+          <div class="field">last_heartbeat <span class="type">DateTime ?</span></div>
+          <div class="field">total_storage <span class="type">Integer</span></div>
+          <div class="field">used_storage <span class="type">Integer</span></div>
+          <div class="field"><span class="fk">user_id</span> <span class="type">→ users.id</span></div>
+          <div class="field"><span class="fk">project_id</span> <span class="type">→ projects.id</span></div>
+          <div class="field"><span class="em">→ blocks, connections</span></div>
+        </div>
+        <div class="schema-card">
+          <h3>blocks</h3>
+          <div class="field"><span class="pk">id</span> <span class="type">String(36) PK</span></div>
+          <div class="field"><span class="fk">node_id</span> <span class="type">→ nodes.id CASCADE</span></div>
+          <div class="field">key <span class="type">String(512) INDEX</span></div>
+          <div class="field">size <span class="type">Integer</span></div>
+          <div class="field">platform <span class="type">String(64)</span></div>
+          <div class="field">content_type <span class="type">String(128) ?</span></div>
+          <div class="field">metadata <span class="type">Text ?</span></div>
+          <div class="field">is_deleted <span class="type">Boolean (soft delete)</span></div>
+          <div class="field">created_at <span class="type">DateTime</span></div>
+          <div class="field">updated_at <span class="type">DateTime</span></div>
+        </div>
+        <div class="schema-card">
+          <h3>projects</h3>
+          <div class="field"><span class="pk">id</span> <span class="type">String(36) PK</span></div>
+          <div class="field">name <span class="type">String(255)</span></div>
+          <div class="field">description <span class="type">Text ?</span></div>
+          <div class="field">is_default <span class="type">Boolean</span></div>
+          <div class="field"><span class="fk">user_id</span> <span class="type">→ users.id</span></div>
+          <div class="field" style="margin-top: 8px;"><span class="em">→ nodes</span></div>
+
+          <h3 style="margin-top: 16px;">platform_connections</h3>
+          <div class="field"><span class="pk">id</span> <span class="type">String(36) PK</span></div>
+          <div class="field">platform <span class="type">String(64)</span></div>
+          <div class="field">access_token_encrypted <span class="type">Text</span></div>
+          <div class="field">account_id <span class="type">String(128)</span></div>
+          <div class="field">worker_url <span class="type">Text ?</span></div>
+          <div class="field"><span class="fk">node_id</span> <span class="type">→ nodes.id CASCADE</span></div>
+
+          <h3 style="margin-top: 16px;">api_keys</h3>
+          <div class="field"><span class="pk">id</span> <span class="type">String(36) PK</span></div>
+          <div class="field">key_prefix <span class="type">String(8) INDEX</span></div>
+          <div class="field">hashed_key <span class="type">String(255)</span></div>
+          <div class="field">expires_at <span class="type">DateTime ?</span></div>
+          <div class="field"><span class="fk">user_id</span> <span class="type">→ users.id</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       API REFERENCE
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section id="api" class="api sec">
+    <div class="container">
+      <div class="sec-label">
+        <div class="bar-v"></div>
+        <span class="cap">API Reference</span>
+      </div>
+      <h2 class="d2 mb-2">REST endpoints.</h2>
+      <p class="body" style="max-width: 560px;">
+        All endpoints served from the FastAPI backend at <code>http://localhost:8000</code>.
+        Protected routes require JWT Bearer token or API Key.
+      </p>
+
+      <table class="api-table">
+        <thead>
+          <tr>
+            <th>Method</th>
+            <th>Path</th>
+            <th>Description</th>
+            <th>Auth</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="method method-get">GET</span></td><td>/health</td><td>Server health check</td><td>None</td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td>/api/v1/auth/signup</td><td>Register with email + password</td><td>None</td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td>/api/v1/auth/login</td><td>Login, returns JWT pair</td><td>None</td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td>/api/v1/auth/refresh</td><td>Refresh access token</td><td>None</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td>/api/v1/auth/me</td><td>Current user profile</td><td>JWT / API Key</td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td>/api/v1/auth/api-keys</td><td>Create API key</td><td>JWT / API Key</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td>/api/v1/auth/api-keys</td><td>List API keys</td><td>JWT / API Key</td></tr>
+          <tr><td><span class="method method-delete">DELETE</span></td><td>/api/v1/auth/api-keys/{id}</td><td>Revoke API key</td><td>JWT / API Key</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td>/api/v1/stats</td><td>User-scoped storage stats</td><td>JWT / API Key</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td>/api/v1/nodes</td><td>List nodes (paginated, filterable)</td><td>JWT / API Key</td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td>/api/v1/nodes</td><td>Register a new node</td><td>JWT / API Key</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td>/api/v1/nodes/{id}</td><td>Node details</td><td>JWT / API Key</td></tr>
+          <tr><td><span class="method method-patch">PATCH</span></td><td>/api/v1/nodes/{id}</td><td>Update node</td><td>JWT / API Key</td></tr>
+          <tr><td><span class="method method-delete">DELETE</span></td><td>/api/v1/nodes/{id}</td><td>Remove node</td><td>JWT / API Key</td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td>/api/v1/nodes/{id}/heartbeat</td><td>Report node health</td><td>JWT / API Key</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td>/api/v1/blocks</td><td>List blocks</td><td>JWT / API Key</td></tr>
+          <tr><td><span class="method method-post">POST</span></td><td>/api/v1/blocks</td><td>Create block metadata</td><td>JWT / API Key</td></tr>
+          <tr><td><span class="method method-delete">DELETE</span></td><td>/api/v1/blocks/{id}</td><td>Soft-delete block</td><td>JWT / API Key</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td>/ws</td><td>WebSocket (JWT query param)</td><td>JWT</td></tr>
+          <tr><td><span class="method method-get">GET</span></td><td>/docs</td><td>Swagger UI (auto-generated)</td><td>None</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       AUTHENTICATION FLOW
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="auth-flow sec-sm">
+    <div class="container">
+      <div class="sec-label">
+        <div class="bar-v"></div>
+        <span class="cap">Authentication</span>
+      </div>
+      <h2 class="d2 mb-2">JWT / API Key / OAuth.</h2>
+      <p class="body" style="max-width: 560px;">
+        The backend supports two authentication strategies sequentially.
+        The CLI uses OAuth2.0 PKCE for platform login.
+      </p>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
+        <div>
+          <h3 class="body-bold mb-1">Backend: JWT + API Key</h3>
+          <div class="code-block" style="font-size: 12px; line-height: 2;"># FastAPI dependency injection
+<span class="keyword">async def</span> get_current_user(
+    credentials: HTTPBearer,
+    db: AsyncSession,
+) -> User:
+    <span class="comment"># 1. Try JWT decode</span>
+    payload = decode_token(token)
+    <span class="keyword">if</span> payload <span class="keyword">and</span> payload.get(<span class="string">"type"</span>) == <span class="string">"access"</span>:
+        user = <span class="keyword">await</span> db.get(User, payload[<span class="string">"sub"</span>])
+        <span class="keyword">if</span> user.is_active:
+            <span class="keyword">return</span> user
+
+    <span class="comment"># 2. Fallback to API Key</span>
+    <span class="keyword">if</span> token.startswith(<span class="string">"ow_"</span>):
+        ... <span class="comment"># verify bcrypt hash</span></div>
+        </div>
+        <div>
+          <h3 class="body-bold mb-1">CLI: OAuth2.0 PKCE</h3>
+          <div class="code-block" style="font-size: 12px; line-height: 2;"><span class="keyword">export abstract class</span> BaseOAuthClient {
+  <span class="keyword">protected</span> generateCodeVerifier(): <span class="type">string</span> {
+    <span class="keyword">return</span> randomBytes(<span class="string">32</span>).toString(<span class="string">'base64url'</span>);
+  }
+
+  <span class="keyword">protected async</span> generateCodeChallenge(
+    verifier: <span class="type">string</span>
+  ): <span class="keyword">Promise</span>&lt;<span class="type">string</span>&gt; {
+    <span class="keyword">const</span> hash = createHash(<span class="string">'sha256'</span>)
+      .update(verifier).digest();
+    <span class="keyword">return</span> hash.toString(<span class="string">'base64url'</span>);
+  }
+
+  <span class="comment">// Tokens encrypted with AES-256-GCM</span>
+  <span class="keyword">protected</span> encryptToken(data: <span class="type">string</span>): <span class="type">string</span> { ... }
+}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       CODE EXAMPLES
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="code-ex sec-sm">
+    <div class="container">
+      <div class="sec-label">
+        <div class="bar-v"></div>
+        <span class="cap">Code</span>
+      </div>
+      <h2 class="d2 mb-2">Real code from the project.</h2>
+      <p class="body" style="max-width: 560px;">
+        Extracted directly from the source tree. No fictional examples.
+      </p>
+
+      <div class="code-grid">
+        <div class="code-item">
+          <span class="cap">backend/app/main.py</span>
+          <div class="code-block" style="font-size: 11px; line-height: 1.8;"><span class="keyword">def</span> create_app() -> FastAPI:
+    app = FastAPI(
+        title=<span class="string">"OasisWaker v2.0"</span>,
+        lifespan=lifespan,
+    )
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.cors_origins,
+    )
+    app.include_router(auth_router)
+    app.include_router(nodes_router)
+    app.include_router(blocks_router)
+    app.include_router(health_router)
+    app.include_router(ws_router)
+    <span class="keyword">return</span> app</div>
+        </div>
+        <div class="code-item">
+          <span class="cap">frontend/src/lib/api.ts</span>
+          <div class="code-block" style="font-size: 11px; line-height: 1.8;"><span class="keyword">export const</span> authApi = {
+  signup: (email, password, fullName?) =>
+    request&lt;TokenPair&gt;(<span class="string">"POST"</span>,
+      <span class="string">"/api/v1/auth/signup"</span>,
+      { email, password, full_name: fullName }),
+
+  login: (email, password) =>
+    request&lt;TokenPair&gt;(<span class="string">"POST"</span>,
+      <span class="string">"/api/v1/auth/login"</span>,
+      { email, password }),
+
+  me: () => request&lt;UserInfo&gt;(
+    <span class="string">"GET"</span>, <span class="string">"/api/v1/auth/me"</span>),
+};
+
+<span class="keyword">export const</span> api = {
+  stats: (signal?) =>
+    request&lt;StatsResponse&gt;(<span class="string">"GET"</span>,
+      <span class="string">"/api/v1/stats"</span>),
+  listNodes: (params?, signal?) => ...,
+};</div>
+        </div>
+        <div class="code-item">
+          <span class="cap">frontend/src/lib/ws.ts</span>
+          <div class="code-block" style="font-size: 11px; line-height: 1.8;"><span class="keyword">export class</span> WsClient {
+  <span class="keyword">private</span> ws: WebSocket | <span class="keyword">null</span> = <span class="keyword">null</span>;
+  <span class="keyword">private</span> reconnectAttempts = <span class="string">0</span>;
+
+  connect() {
+    <span class="keyword">this</span>.ws = <span class="keyword">new</span> WebSocket(WS_URL);
+    <span class="keyword">this</span>.ws.onopen = () => {
+      <span class="keyword">this</span>.reconnectAttempts = <span class="string">0</span>;
+    };
+    <span class="keyword">this</span>.ws.onclose = () => {
+      <span class="keyword">this</span>.scheduleReconnect();
+    };
+  }
+
+  <span class="keyword">private</span> scheduleReconnect() {
+    <span class="keyword">const</span> delay = Math.min(
+      <span class="string">1000</span> * Math.pow(<span class="string">2</span>, <span class="keyword">this</span>.reconnectAttempts),
+      <span class="string">30000</span>
+    );
+    <span class="keyword">this</span>.reconnectAttempts++;
+    setTimeout(() => <span class="keyword">this</span>.connect(), delay);
+  }
+}</div>
+        </div>
+        <div class="code-item">
+          <span class="cap">src/crypto/encryption.ts</span>
+          <div class="code-block" style="font-size: 11px; line-height: 1.8;"><span class="keyword">const</span> ALGORITHM = <span class="string">'aes-256-gcm'</span>;
+<span class="keyword">const</span> IV_LENGTH = <span class="string">16</span>;
+
+<span class="keyword">export function</span> encrypt(
+  data: <span class="type">string</span>, key: <span class="type">string</span>
+): <span class="type">string</span> {
+  <span class="keyword">const</span> iv = randomBytes(IV_LENGTH);
+  <span class="keyword">const</span> cipher = createCipheriv(ALGORITHM,
+    Buffer.from(key, <span class="string">'hex'</span>), iv);
+  <span class="keyword">let</span> encrypted = cipher.update(
+    data, <span class="string">'utf8'</span>, <span class="string">'hex'</span>);
+  encrypted += cipher.final(<span class="string">'hex'</span>);
+  <span class="keyword">const</span> authTag = cipher.getAuthTag();
+  <span class="keyword">return</span> [
+    iv.toString(<span class="string">'hex'</span>),
+    authTag.toString(<span class="string">'hex'</span>),
+    encrypted,
+  ].join(<span class="string">':'</span>);
+}</div>
+        </div>
+        <div class="code-item">
+          <span class="cap">backend/app/core/rate_limit.py</span>
+          <div class="code-block" style="font-size: 11px; line-height: 1.8;">_storage = MemoryStorage()
+_strategy = MovingWindowRateLimiter(_storage)
+_auth_limit = RateLimitItemPerMinute(<span class="string">60</span>)
+_unauth_limit = RateLimitItemPerMinute(<span class="string">20</span>)
+
+<span class="keyword">async def</span> check_rate_limit(
+    request: Request
+):
+    user_id = getattr(
+      request.state, <span class="string">"user_id"</span>, <span class="keyword">None</span>)
+    <span class="keyword">if</span> user_id:
+        key = <span class="string">f"user:{user_id}"</span>
+        item = _auth_limit
+    <span class="keyword">else</span>:
+        key = <span class="string">f"ip:{request.client.host}"</span>
+        item = _unauth_limit
+
+    <span class="keyword">if not</span> _strategy.hit(item, key):
+        <span class="keyword">raise</span> HTTPException(<span class="string">429</span>)</div>
+        </div>
+        <div class="code-item">
+          <span class="cap">backend/app/core/quota.py</span>
+          <div class="code-block" style="font-size: 11px; line-height: 1.8;"><span class="keyword">async def</span> check_storage_quota(
+    db: AsyncSession,
+    user: User,
+    new_size: int,
+) -> tuple[bool, int, int]:
+    result = <span class="keyword">await</span> db.execute(
+        select(func.coalesce(
+          func.sum(Block.size), <span class="string">0</span>))
+        .select_from(Block)
+        .join(Node, Block.node_id == Node.id)
+        .where(Node.user_id == user.id,
+               Block.is_deleted == False)
+    )
+    used_bytes: int = result.scalar_one()
+    <span class="keyword">return</span> (
+        used_bytes + new_size &lt;=
+          user.storage_quota_bytes,
+        used_bytes,
+        user.storage_quota_bytes,
+    )</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       TUTORIAL — LOCAL SETUP
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section id="tutorial" class="tutorial sec">
+    <div class="container">
+      <div class="sec-label">
+        <div class="bar-v"></div>
+        <span class="cap">Tutorial</span>
+      </div>
+      <h2 class="d2 mb-2">Local setup guide.</h2>
+      <p class="body" style="max-width: 560px;">
+        From zero to a running backend with dashboard. Requires Python 3.10+,
+        Node.js 18+, and pnpm.
+      </p>
+
+      <div class="tut-step">
+        <div class="tut-num">1</div>
+        <div class="tut-content">
+          <h3>Clone and install backend dependencies</h3>
+          <p>Using Poetry (recommended) or pip. The backend uses FastAPI with SQLAlchemy async and aiosqlite for development.</p>
+          <div class="code-block"># Backend setup (Python 3.10+ required)
+cd backend
+
+# Install with poetry
+poetry install
+
+# Or install with pip
+pip install fastapi uvicorn sqlalchemy aiosqlite \
+  pydantic-settings python-jose passlib[bcrypt] \
+  alembic limits httpx python-dotenv
+
+# Copy environment config
+cp .env.example .env  # or let defaults apply</div>
+        </div>
+      </div>
+
+      <div class="tut-step">
+        <div class="tut-num">2</div>
+        <div class="tut-content">
+          <h3>Start the backend server</h3>
+          <p>Uvicorn with auto-reload. The server initializes the SQLite database and creates all tables on startup. Swagger docs at <code>/docs</code>.</p>
+          <div class="code-block"># Start the FastAPI server
+uvicorn app.main:create_app --factory \
+  --host 0.0.0.0 --port 8000 --reload
+
+# Or with poetry
+poetry run uvicorn app.main:create_app \
+  --factory --host 0.0.0.0 --port 8000 --reload
+
+# Verify
+curl http://localhost:8000/health
+# {"status":"ok","service":"oasiswaker-v2"}</div>
+        </div>
+      </div>
+
+      <div class="tut-step">
+        <div class="tut-num">3</div>
+        <div class="tut-content">
+          <h3>Create a user and get an API key</h3>
+          <p>Sign up, then create an API key for programmatic access. The API key format is <code>ow_&lt;5chars&gt;_&lt;40chars&gt;</code>.</p>
+          <div class="code-block"># Sign up
+curl -X POST http://localhost:8000/api/v1/auth/signup \
+  -H "Content-Type: application/json" \
+  -d '{"email":"demo@test.com","password":"test123"}'
+
+# Create API key (use the access_token from signup)
+curl -X POST http://localhost:8000/api/v1/auth/api-keys \
+  -H "Authorization: Bearer &lt;access_token&gt;" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"dev-key"}'
+
+# {"id":"...","key_prefix":"ow_abcde",\
+#  "full_key":"ow_abcde_..."}</div>
+        </div>
+      </div>
+
+      <div class="tut-step">
+        <div class="tut-num">4</div>
+        <div class="tut-content">
+          <h3>Register a node and report heartbeat</h3>
+          <p>Nodes are the core entity. Each node has a unique <code>node_id</code>, status, platform, and storage tracking.</p>
+          <div class="code-block"># Register a node
+curl -X POST http://localhost:8000/api/v1/nodes \
+  -H "Authorization: Bearer &lt;token&gt;" \
+  -H "Content-Type: application/json" \
+  -d '{"name":"my-first-node",\
+       "node_id":"node-001",\
+       "platform":"cloudflare",\
+       "version":"2.0.0"}'
+
+# Send heartbeat
+curl -X POST \
+  http://localhost:8000/api/v1/nodes/&lt;id&gt;/heartbeat \
+  -H "Authorization: Bearer &lt;token&gt;" \
+  -H "Content-Type: application/json" \
+  -d '{"status":"online","used_storage":0}'
+
+# List nodes
+curl http://localhost:8000/api/v1/nodes \
+  -H "Authorization: Bearer &lt;token&gt;"</div>
+        </div>
+      </div>
+
+      <div class="tut-step">
+        <div class="tut-num">5</div>
+        <div class="tut-content">
+          <h3>Start the frontend dashboard</h3>
+          <p>Next.js 14 App Router with Swiss Style design. Connects to <code>localhost:8000</code> by default.</p>
+          <div class="code-block"># Frontend setup (Node.js 18+ required)
+cd frontend
+pnpm install
+pnpm dev
+
+# Open http://localhost:3000
+# Login with the credentials from step 3</div>
+        </div>
+      </div>
+
+      <div class="tut-step">
+        <div class="tut-num">6</div>
+        <div class="tut-content">
+          <h3>Run database migrations (Alembic)</h3>
+          <p>Schema changes are managed via Alembic. The current schema has two migrations: initial table creation and foreign key addition.</p>
+          <div class="code-block"># Run migrations
+cd backend
+alembic upgrade head
+
+# Check history
+alembic history
+
+# Create a new migration
+alembic revision --autogenerate \
+  -m "description"</div>
+        </div>
+      </div>
+
+      <div class="tut-step">
+        <div class="tut-num">7</div>
+        <div class="tut-content">
+          <h3>CLI tool: OAuth login to a platform</h3>
+          <p>The v1.0 CLI handles OAuth2.0 PKCE login to Cloudflare, Vercel, or Supabase, then deploys edge workers.</p>
+          <div class="code-block"># Install the CLI
+npx @oasisbio/oasiswaker init
+
+# Login to a platform (opens browser for OAuth)
+oasiswaker login cloudflare
+
+# Deploy the adapter worker
+oasiswaker deploy cloudflare
+
+# Check status
+oasiswaker status</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       SYSTEM DESIGN NOTES
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="decisions sec-sm">
+    <div class="container">
+      <div class="sec-label">
+        <div class="bar-v"></div>
+        <span class="cap">Design Decisions</span>
+      </div>
+      <h2 class="d2 mb-2">Key constraints.</h2>
+      <p class="body" style="max-width: 560px;">
+        Hard-coded in the project memory and enforced at every layer.
+      </p>
+
+      <div class="decisions-grid">
+        <div class="decisions-card">
+          <div class="bar-v-sm"></div>
+          <h3>All endpoints authenticated</h3>
+          <p>
+            Every API endpoint (except <code>/health</code>, <code>/signup</code>,
+            <code>/login</code>) requires JWT Bearer or API Key. The
+            <code>get_current_user</code> dependency is injected at the router level.
+          </p>
+        </div>
+        <div class="decisions-card">
+          <div class="bar-v-sm"></div>
+          <h3>Row-level security</h3>
+          <p>
+            All queries are scoped to the authenticated user via
+            <code>scoping.scope_query_by_user()</code>. A user can only see their
+            own nodes, blocks, and API keys.
+          </p>
+        </div>
+        <div class="decisions-card">
+          <div class="bar-v-sm"></div>
+          <h3>Rate limiting enforced</h3>
+          <p>
+            Sliding window rate limiter: 60 req/min for authenticated users,
+            20 req/min for unauthenticated. In-memory storage (Redis planned
+            for production).
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       CTA
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <section class="sec">
+    <div class="container">
+      <div class="bar-4 mb-4"></div>
+      <h2 class="d2 mb-2">Architecture is documented. Code is real.</h2>
+      <p class="body" style="max-width: 520px; margin-bottom: 24px;">
+        All source code is in the repository. Start with the tutorial above,
+        then explore the actual files in <code>backend/</code>, <code>frontend/</code>,
+        and <code>src/</code>. No placeholders. No fictional examples.
+      </p>
+      <div class="hero-cta">
+        <a href="https://github.com/OasisBio/oasiswaker" class="btn btn-primary" target="_blank" rel="noopener">
+          View Source on GitHub
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+        <a href="http://localhost:3000" class="btn btn-outline" target="_blank" rel="noopener">Open Dashboard</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════════════════
+       FOOTER
+       ═══════════════════════════════════════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-left">
+        <div class="logo-mark">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            <path d="M1 8L5 2L9 11L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <span class="footer-meta">OasisWaker v2.0</span>
+        <span class="footer-meta footer-sep">/</span>
+        <span class="footer-meta">OasisBio</span>
+        <span class="footer-meta footer-sep">/</span>
+        <span class="footer-meta">MIT</span>
+      </div>
+      <span class="footer-meta">&copy; 2026 OasisBio</span>
+    </div>
+  </footer>
 
 </body>
 </html>
