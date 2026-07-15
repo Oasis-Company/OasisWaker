@@ -24,7 +24,7 @@ const config: Config = {
             800: "#222222",
             900: "#111111",
           },
-          red: "#DC2626",
+          red: "#DA291C",
         },
       },
       // ── 8px Baseline Grid Spacing ──────────────────────────────────────
@@ -41,12 +41,14 @@ const config: Config = {
       },
       // ── Typography ─────────────────────────────────────────────────────
       fontSize: {
-        caption: ["12px", { lineHeight: "16px", fontWeight: "400" }],
-        body: ["14px", { lineHeight: "20px", fontWeight: "400" }],
-        "body-bold": ["14px", { lineHeight: "20px", fontWeight: "600" }],
-        h3: ["18px", { lineHeight: "24px", fontWeight: "700" }],
-        h2: ["24px", { lineHeight: "32px", fontWeight: "700" }],
-        h1: ["32px", { lineHeight: "40px", fontWeight: "700" }],
+        caption: ["12px", { lineHeight: "1.4", fontWeight: "400" }],
+        body: ["14px", { lineHeight: "1.6", fontWeight: "400" }],
+        "body-bold": ["14px", { lineHeight: "1.6", fontWeight: "700" }],
+        h3: ["18px", { lineHeight: "1.4", fontWeight: "700" }],
+        h2: ["24px", { lineHeight: "1.3", fontWeight: "700" }],
+        h1: ["32px", { lineHeight: "1.2", fontWeight: "700" }],
+        hero: ["clamp(40px, 8vw, 72px)", { lineHeight: "1.05", fontWeight: "700" }],
+        "hero-stat": ["clamp(28px, 5vw, 40px)", { lineHeight: "1.1", fontWeight: "700" }],
       },
       // ── Font Family ────────────────────────────────────────────────────
       fontFamily: {

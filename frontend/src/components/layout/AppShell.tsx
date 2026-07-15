@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { Sidebar } from "./Sidebar";
 import { useAuth } from "@/context/AuthContext";
 
@@ -27,6 +27,7 @@ function isAuthRoute(path: string): boolean {
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const router = useRouter();
   const { isAuthenticated, isLoading } = useAuth();
 
   // Landing page — no sidebar, no auth guard
@@ -55,10 +56,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
 
     // Redirect to login if not authenticated
     if (!isAuthenticated) {
-      // Use window.location for a hard redirect (clears any stale state)
-      if (typeof window !== "undefined") {
-        window.location.href = "/login";
-      }
+      // Use router.push for SPA navigation
+      router.push("/login");
       return null;
     }
 

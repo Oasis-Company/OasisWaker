@@ -23,8 +23,6 @@ export const Badge = React.memo(function Badge({
       className={`inline-block px-sm py-2xs text-caption font-medium ${variantStyles[variant]}`}
       role="status"
       aria-label={`Status: ${label}`}
-      aria-live="polite"
-      tabIndex={0}
     >
       {children}
     </span>

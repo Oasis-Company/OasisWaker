@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 
 interface StatsCardProps {
   label: string;
@@ -34,11 +35,13 @@ export const StatsCard = React.memo(function StatsCard({
   const trendArrow =
     trend === "up" ? "↑" : trend === "down" ? "↓" : "→";
 
+  const reducedMotion = useReducedMotion();
+
   return (
     <motion.div
-      initial={{ y: 8, opacity: 0 }}
+      initial={reducedMotion ? { y: 0, opacity: 1 } : { y: 8, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.4, delay: delay / 1000, ease: "easeOut" }}
+      transition={reducedMotion ? { duration: 0 } : { duration: 0.4, delay: delay / 1000, ease: "easeOut" }}
       className="card flex flex-col relative"
       role="region"
       aria-label={`${label}: ${value}`}
@@ -53,7 +56,7 @@ export const StatsCard = React.memo(function StatsCard({
       </p>
 
       <div className="flex items-baseline gap-md">
-        <span className="text-[40px] leading-[1.1] font-bold text-swiss-black">
+        <span className="text-hero-stat text-swiss-black" style={{ fontVariantNumeric: 'tabular-nums' }}>
           {value}
         </span>
         {trend && trendValue && (

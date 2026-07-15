@@ -34,7 +34,7 @@ export function Sidebar() {
   };
 
   return (
-    <aside className="w-60 border-r border-swiss-gray-300 flex flex-col bg-swiss-white flex-shrink-0">
+    <aside className="w-60 border-r border-swiss-gray-300 flex flex-col bg-swiss-white flex-shrink-0" style={{ overscrollBehavior: 'contain' }}>
       {/* Logo */}
       <div className="h-16 border-b border-swiss-gray-300 flex items-center px-lg gap-md">
         <Activity className="w-5 h-5 text-swiss-black" />

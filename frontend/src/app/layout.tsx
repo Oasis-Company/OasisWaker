@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import { AppShell } from "@/components/layout/AppShell";
-import { AuthProvider } from "@/context/AuthContext";
+import { Providers } from "@/components/providers/Providers";
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -11,10 +10,27 @@ const spaceGrotesk = Space_Grotesk({
   variable: "--font-space-grotesk",
 });
 
+export const viewport = {
+  themeColor: "#FFFFFF",
+  colorScheme: "light" as const,
+};
+
 export const metadata: Metadata = {
-  title: "OasisWaker — Crowdsourced Edge Infrastructure",
-  description:
-    "Your free cloud quotas, aggregated into infrastructure no single company controls.",
+  title: "OasisWaker",
+  description: "Decentralized edge storage network",
+  openGraph: {
+    title: "OasisWaker — Decentralized Edge Storage Network",
+    description:
+      "Open protocol for decentralized edge storage. Real-time sync, zero-config deployment, cross-platform.",
+    type: "website",
+    siteName: "OasisWaker",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "OasisWaker — Decentralized Edge Storage Network",
+    description:
+      "Open protocol for decentralized edge storage. Real-time sync, zero-config deployment, cross-platform.",
+  },
 };
 
 export default function RootLayout({
@@ -25,9 +41,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={spaceGrotesk.variable}>
       <body>
-        <AuthProvider>
-          <AppShell>{children}</AppShell>
-        </AuthProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );

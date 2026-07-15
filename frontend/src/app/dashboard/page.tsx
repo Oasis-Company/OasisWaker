@@ -1,7 +1,10 @@
 "use client";
 
 import React, { useMemo } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
+import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
 import { RefreshCw, Activity } from "lucide-react";
 import { StatsCard } from "@/components/layout/StatsCard";
 import { Badge } from "@/components/ui/Badge";
@@ -10,44 +13,9 @@ import { Skeleton } from "@/components/ui/Skeleton";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { StorageUsageChart } from "@/components/dashboard/StorageUsageChart";
 import { useDashboardData } from "@/lib/hooks";
+import { formatBytes, formatTimeAgo, formatDateTime } from "@/lib/format";
 import type { NodeRead } from "@/lib/api";
 import type { WsConnectionStatus } from "@/lib/ws";
-
-/* ── Helpers ─────────────────────────────────────────────────────────────── */
-
-function formatBytes(bytes: number): string {
-  if (bytes === 0) return "0 B";
-  const units = ["B", "KB", "MB", "GB", "TB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${units[i]}`;
-}
-
-function formatTimeAgo(date: Date | null): string {
-  if (!date) return "";
-  const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
-  if (seconds < 5) return "just now";
-  if (seconds < 60) return `${seconds}s ago`;
-  return `${Math.floor(seconds / 60)}m ago`;
-}
-
-/* ── Stagger animation config ──────────────────────────────────────────────── */
-
-const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: {
-    opacity: 1,
-    transition: { staggerChildren: 0.03 },
-  },
-};
-
-const itemVariants = {
-  hidden: { y: 8, opacity: 0 },
-  visible: {
-    y: 0,
-    opacity: 1,
-    transition: { duration: 0.4, ease: "easeOut" },
-  },
-};
 
 /* ── Table columns (memoized) ──────────────────────────────────────────────── */
 
@@ -60,6 +28,44 @@ const WS_STATUS_LABEL: Record<WsConnectionStatus, { label: string; className: st
 /* ── Page Component ────────────────────────────────────────────────────────── */
 
 export default function DashboardPage() {
+  const router = useRouter();
+  const reducedMotion = useReducedMotion();
+
+  const containerVariants = useMemo(
+    () =>
+      reducedMotion
+        ? {
+            hidden: { opacity: 1 },
+            visible: { opacity: 1, transition: { staggerChildren: 0 } },
+          }
+        : {
+            hidden: { opacity: 0 },
+            visible: {
+              opacity: 1,
+              transition: { staggerChildren: 0.03 },
+            },
+          },
+    [reducedMotion],
+  );
+
+  const itemVariants = useMemo(
+    () =>
+      reducedMotion
+        ? {
+            hidden: { y: 0, opacity: 1 },
+            visible: { y: 0, opacity: 1 },
+          }
+        : {
+            hidden: { y: 8, opacity: 0 },
+            visible: {
+              y: 0,
+              opacity: 1,
+              transition: { duration: 0.4, ease: "easeOut" },
+            },
+          },
+    [reducedMotion],
+  );
+
   const {
     stats,
     nodes,
@@ -104,7 +110,9 @@ export default function DashboardPage() {
         sortable: true,
         sortValue: (n) => n.used_storage / Math.max(n.total_storage, 1),
         render: (n) =>
-          `${formatBytes(n.used_storage)} / ${formatBytes(n.total_storage)}`,
+          <span style={{ fontVariantNumeric: 'tabular-nums' }}>
+            {formatBytes(n.used_storage)} / {formatBytes(n.total_storage)}
+          </span>,
       },
       {
         key: "last_heartbeat",
@@ -113,7 +121,7 @@ export default function DashboardPage() {
         sortValue: (n) => n.last_heartbeat ?? "",
         render: (n) =>
           n.last_heartbeat
-            ? new Date(n.last_heartbeat).toLocaleString()
+            ? formatDateTime(n.last_heartbeat)
             : "Never",
       },
     ],
@@ -189,12 +197,12 @@ export default function DashboardPage() {
       <p className="text-body text-swiss-gray-500 max-w-md mb-xl">
         Connect your first node to begin monitoring your edge infrastructure.
       </p>
-      <button
-        onClick={() => (window.location.href = "/nodes")}
+      <Link
+        href="/nodes"
         className="bg-swiss-black text-swiss-white text-body-bold px-xl py-md hover:bg-swiss-gray-700 transition-colors"
       >
         Add Node
-      </button>
+      </Link>
     </div>
   ) : null;
 
@@ -229,7 +237,12 @@ export default function DashboardPage() {
               </div>
               {/* Last updated */}
               <span className="text-caption text-swiss-gray-400">
-                {lastUpdated ? `Updated ${formatTimeAgo(lastUpdated)}` : ""}
+                {lastUpdated ? `Updated ${formatTimeAgo(lastUpdated.toISOString())}` : ""}
+                <span aria-live="polite" aria-atomic="true" className="sr-only">
+                  {lastUpdated
+                    ? `Dashboard updated ${formatTimeAgo(lastUpdated.toISOString())}`
+                    : ""}
+                </span>
               </span>
               {/* Refresh button */}
               <button
@@ -308,7 +321,7 @@ export default function DashboardPage() {
               isLoading={isLoading && !error}
               emptyMessage="No nodes registered yet"
               onRowClick={(n) => {
-                window.location.href = `/nodes/${n.id}`;
+                router.push(`/nodes/${n.id}`);
               }}
             />
           </motion.div>

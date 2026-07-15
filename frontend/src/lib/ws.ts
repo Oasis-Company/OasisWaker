@@ -1,5 +1,5 @@
 const WS_URL =
-  process.env.NEXT_PUBLIC_WS_URL ?? "ws://127.0.0.1:8000/ws/v1/events";
+  process.env.NEXT_PUBLIC_WS_URL ?? "ws://localhost:8000/ws/v1/events";
 
 export type EventHandler = (event: { type: string; data: unknown }) => void;
 export type WsConnectionStatus = "connecting" | "connected" | "disconnected";

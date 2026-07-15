@@ -2,17 +2,12 @@
 
 import React from "react";
 import { motion } from "framer-motion";
+import { useReducedMotion } from "@/lib/hooks/useReducedMotion";
+import { formatBytes } from "@/lib/format";
 
 interface StorageUsageChartProps {
   usedBytes: number;
   totalBytes: number;
-}
-
-function formatBytes(bytes: number): string {
-  if (bytes === 0) return "0 B";
-  const units = ["B", "KB", "MB", "GB", "TB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${units[i]}`;
 }
 
 /**
@@ -28,6 +23,8 @@ export function StorageUsageChart({ usedBytes, totalBytes }: StorageUsageChartPr
       ? Math.min(Math.round((usedBytes / totalBytes) * 100), 100)
       : 0;
 
+  const reducedMotion = useReducedMotion();
+
   return (
     <div className="card" role="img" aria-label={`Storage usage: ${percentage}% used`}>
       <div className="flex items-center justify-between mb-md">
@@ -42,9 +39,9 @@ export function StorageUsageChart({ usedBytes, totalBytes }: StorageUsageChartPr
         {/* Bar foreground with animation */}
         <motion.div
           className="absolute inset-y-0 left-0 bg-swiss-red"
-          initial={{ width: 0 }}
+          initial={reducedMotion ? { width: `${percentage}%` } : { width: 0 }}
           animate={{ width: `${percentage}%` }}
-          transition={{ duration: 0.8, ease: "easeOut", delay: 0.25 }}
+          transition={reducedMotion ? { duration: 0 } : { duration: 0.8, ease: "easeOut", delay: 0.25 }}
         />
       </div>
 

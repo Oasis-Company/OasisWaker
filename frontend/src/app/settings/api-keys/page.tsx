@@ -1,29 +1,23 @@
 "use client";
 
-import { useState, useEffect, type FormEvent } from "react";
-import { authApi, type ApiKeyInfo, type ApiKeyCreated } from "@/lib/api";
+import { useState, type FormEvent } from "react";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { useFetch } from "@/lib/hooks/useFetch";
+import { authApi, type ApiKeyCreated } from "@/lib/api";
+import { formatDate } from "@/lib/format";
 
 export default function ApiKeysPage() {
-  const [keys, setKeys] = useState<ApiKeyInfo[]>([]);
   const [newKey, setNewKey] = useState<ApiKeyCreated | null>(null);
   const [name, setName] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState("");
+  const [revokeTarget, setRevokeTarget] = useState<string | null>(null);
+  const [revoking, setRevoking] = useState(false);
 
-  const fetchKeys = async () => {
-    try {
-      const data = await authApi.listApiKeys();
-      setKeys(data);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to load API keys");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchKeys();
-  }, []);
+  const { data, isLoading, refetch: fetchKeys } = useFetch(
+    () => authApi.listApiKeys(),
+    []
+  );
+  const keys = data ?? [];
 
   const handleCreate = async (e: FormEvent) => {
     e.preventDefault();
@@ -40,18 +34,20 @@ export default function ApiKeysPage() {
     }
   };
 
-  const handleRevoke = async (id: string) => {
-    if (!window.confirm("Revoke this API key? This action cannot be undone.")) {
-      return;
-    }
+  const handleRevoke = async () => {
+    if (!revokeTarget) return;
+    setRevoking(true);
     try {
-      await authApi.deleteApiKey(id);
+      await authApi.deleteApiKey(revokeTarget);
       setNewKey(null);
+      setRevokeTarget(null);
       await fetchKeys();
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Failed to revoke API key"
       );
+    } finally {
+      setRevoking(false);
     }
   };
 
@@ -114,6 +110,19 @@ export default function ApiKeysPage() {
         <p className="text-caption text-swiss-red mb-lg">{error}</p>
       )}
 
+      {/* Revoke confirmation dialog */}
+      <ConfirmDialog
+        isOpen={revokeTarget !== null}
+        title="Revoke API Key"
+        message="Revoke this API key? Any services using this key will immediately lose access."
+        confirmLabel="Revoke"
+        cancelLabel="Cancel"
+        variant="danger"
+        isLoading={revoking}
+        onConfirm={handleRevoke}
+        onCancel={() => setRevokeTarget(null)}
+      />
+
       {/* Key List */}
       {keys.length === 0 ? (
         <p className="text-body text-swiss-gray-400">
@@ -154,16 +163,16 @@ export default function ApiKeysPage() {
                     </code>
                   </td>
                   <td className="px-md py-sm text-caption text-swiss-gray-500">
-                    {new Date(key.created_at).toLocaleDateString()}
+                    {formatDate(key.created_at)}
                   </td>
                   <td className="px-md py-sm text-caption text-swiss-gray-500">
                     {key.last_used_at
-                      ? new Date(key.last_used_at).toLocaleDateString()
+                      ? formatDate(key.last_used_at)
                       : "Never"}
                   </td>
                   <td className="px-md py-sm text-right">
                     <button
-                      onClick={() => handleRevoke(key.id)}
+                      onClick={() => setRevokeTarget(key.id)}
                       className="text-caption text-swiss-red hover:underline"
                     >
                       Revoke

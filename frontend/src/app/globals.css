@@ -5,13 +5,17 @@
 /* ── Swiss Style Design System ─────────────────────────────────────────── */
 
 :root {
-  --swiss-black: #1a1a1a;
-  --swiss-white: #fafafa;
-  --swiss-red: #d32f2f;
+  --swiss-black: #000000;
+  --swiss-white: #FFFFFF;
+  --swiss-red: #DA291C;
 }
 
 * {
   box-sizing: border-box;
+}
+
+html {
+  color-scheme: light;
 }
 
 body {
@@ -20,12 +24,32 @@ body {
   background-color: var(--swiss-white);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overscroll-behavior: none;
 
   /* 8px grid background — functional, not decorative */
   background-image:
     linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
   background-size: 8px 8px;
+}
+
+/* Safe area insets for notched devices */
+@supports (padding: env(safe-area-inset-top)) {
+  body {
+    padding-top: env(safe-area-inset-top);
+    padding-right: env(safe-area-inset-right);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+  }
+}
+
+/* ── Reduced motion ───────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* ── Skeleton Animation ────────────────────────────────────────────────── */
@@ -50,9 +74,7 @@ body {
 .transition-bg {
   transition: background-color 0.15s ease;
 }
-.transition-all-fast {
-  transition: all 0.15s ease;
-}
+.transition-all-fast { transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease; }
 
 /* ── Card ──────────────────────────────────────────────────────────────── */
 

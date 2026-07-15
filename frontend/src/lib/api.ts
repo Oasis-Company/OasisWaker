@@ -178,7 +178,8 @@ export const authApi = {
 
   me: () => request<UserInfo>("GET", "/api/v1/auth/me"),
 
-  listApiKeys: () => request<ApiKeyInfo[]>("GET", "/api/v1/auth/api-keys"),
+  listApiKeys: (signal?: AbortSignal) =>
+    request<ApiKeyInfo[]>("GET", "/api/v1/auth/api-keys", undefined, signal),
 
   createApiKey: (name: string) =>
     request<ApiKeyCreated>("POST", "/api/v1/auth/api-keys", { name }),
@@ -223,7 +224,8 @@ export const api = {
     );
   },
 
-  getNode: (id: string) => request<NodeRead>("GET", `/api/v1/nodes/${id}`),
+  getNode: (id: string, signal?: AbortSignal) =>
+    request<NodeRead>("GET", `/api/v1/nodes/${id}`, undefined, signal),
 
   createNode: (data: NodeCreatePayload) =>
     request<NodeRead>("POST", "/api/v1/nodes", data),

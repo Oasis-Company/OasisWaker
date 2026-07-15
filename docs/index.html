@@ -5,8 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>OasisWaker — Architecture · API · Tutorial</title>
   <meta name="description" content="OasisWaker technical architecture documentation: real code, real API, real database schema." />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <meta name="author" content="OasisBio" />
+  <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#FFFFFF" />
+  <meta property="og:title" content="OasisWaker — Architecture · API · Tutorial" />
+  <meta property="og:description" content="OasisWaker technical architecture documentation: real code, real API, real database schema." />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://oasisbio.github.io/oasiswaker" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="OasisWaker — Architecture · API · Tutorial" />
+  <meta name="twitter:description" content="OasisWaker technical architecture documentation." />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" as="style" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <style>
     /* ═══════════════════════════════════════════════════════════════════════
@@ -45,6 +55,16 @@
       background: var(--white);
       line-height: 1.5;
       overflow-x: hidden;
+      overscroll-behavior: none;
+    }
+
+    @supports (padding: env(safe-area-inset-top)) {
+      body {
+        padding-top: env(safe-area-inset-top);
+        padding-right: env(safe-area-inset-right);
+        padding-bottom: env(safe-area-inset-bottom);
+        padding-left: env(safe-area-inset-left);
+      }
     }
 
     /* ── 8px Grid Overlay (visible on hover) ─────────────────────────────── */
@@ -123,6 +143,24 @@
       margin-bottom: var(--u);
     }
 
+    /* ── Skip Link ────────────────────────────────────────────────────────── */
+    .skip-link {
+      position: absolute;
+      top: -100%;
+      left: 8px;
+      padding: 8px 16px;
+      background: var(--black);
+      color: var(--white);
+      z-index: 10000;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 700;
+      text-decoration: none;
+    }
+    .skip-link:focus {
+      top: 8px;
+    }
+
     /* ── Buttons ──────────────────────────────────────────────────────────── */
     .btn {
       display: inline-flex;
@@ -142,6 +180,15 @@
     .btn-primary:hover { background: var(--g600); }
     .btn-outline { background: transparent; color: var(--black); border: 1px solid var(--black); }
     .btn-outline:hover { background: var(--g100); }
+
+    /* ── Focus visible ──────────────────────────────────────────────────────── */
+    button:focus-visible,
+    a:focus-visible,
+    .btn:focus-visible,
+    [tabindex]:not([tabindex="-1"]):focus-visible {
+      outline: 2px solid var(--black);
+      outline-offset: 2px;
+    }
 
     /* ── Header ───────────────────────────────────────────────────────────── */
     .header {
@@ -372,6 +419,12 @@
     .anm-d7 { animation-delay: 0.6s; }
     .anm-d8 { animation-delay: 0.7s; }
 
+    /* ── Reduced motion ──────────────────────────────────────────────────── */
+    @media (prefers-reduced-motion: reduce) {
+      .anm { opacity: 1 !important; animation: none !important; }
+      html { scroll-behavior: auto; }
+    }
+
     /* ── Responsive ───────────────────────────────────────────────────────── */
     @media (max-width: 1024px) {
       .hero-inner { grid-template-columns: 1fr; gap: 24px; }
@@ -386,14 +439,38 @@
       .sec { padding: 48px 0; }
       .nav a:not(.btn) { display: none; }
     }
+    @media (max-width: 480px) {
+      .container { padding: 0 16px; }
+      .hero-title { font-size: clamp(28px, 12vw, 40px); }
+      .hero-cta { flex-direction: column; align-items: stretch; }
+      .hero-cta .btn { text-align: center; justify-content: center; }
+      .hero-stats { gap: 12px; }
+      .sec { padding: 32px 0; }
+      .d1 { font-size: clamp(28px, 8vw, 36px); }
+      .d2 { font-size: clamp(18px, 5vw, 24px); }
+      .d3 { font-size: clamp(14px, 4vw, 18px); }
+      .header { height: 48px; }
+      .logo { font-size: 14px; }
+      .nav { gap: 8px; }
+      .nav a { font-size: 11px; padding: 6px 8px; }
+    }
     @media print {
       body::before { display: none; }
+      body { font-size: 11pt; }
       .header { position: static; border-bottom: 0.5pt solid #000; }
       .hero { min-height: auto; }
+      .btn { display: none; }
+      .nav { display: none; }
+      .code-block { break-inside: avoid; page-break-inside: avoid; }
+      .arch-grid, .schema-grid, .code-grid, .decisions-grid { break-inside: avoid; }
+      a[href]::after { content: " (" attr(href) ")"; font-size: 9pt; font-weight: 400; }
+      .container { max-width: 100%; padding: 0; }
     }
   </style>
 </head>
 <body>
+
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
   <!-- ═══════════════════════════════════════════════════════════════════════
        HEADER
@@ -402,7 +479,7 @@
     <div class="container">
       <a href="/" class="logo">
         <div class="logo-mark">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false">
             <path d="M1 8L5 2L9 11L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
@@ -421,7 +498,7 @@
   <!-- ═══════════════════════════════════════════════════════════════════════
        HERO
        ═══════════════════════════════════════════════════════════════════════ -->
-  <section class="hero">
+  <section id="main-content" class="hero">
     <div class="container">
       <div class="hero-inner">
         <div class="hero-main">
@@ -739,7 +816,7 @@
       </p>
 
       <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 24px;">
-        <div>
+        <div role="region" aria-label="Code: Backend JWT + API Key authentication">
           <h3 class="body-bold mb-1">Backend: JWT + API Key</h3>
           <div class="code-block" style="font-size: 12px; line-height: 2;"># FastAPI dependency injection
 <span class="keyword">async def</span> get_current_user(
@@ -757,7 +834,7 @@
     <span class="keyword">if</span> token.startswith(<span class="string">"ow_"</span>):
         ... <span class="comment"># verify bcrypt hash</span></div>
         </div>
-        <div>
+        <div role="region" aria-label="Code: CLI OAuth2.0 PKCE flow">
           <h3 class="body-bold mb-1">CLI: OAuth2.0 PKCE</h3>
           <div class="code-block" style="font-size: 12px; line-height: 2;"><span class="keyword">export abstract class</span> BaseOAuthClient {
   <span class="keyword">protected</span> generateCodeVerifier(): <span class="type">string</span> {
@@ -795,7 +872,7 @@
       </p>
 
       <div class="code-grid">
-        <div class="code-item">
+        <div class="code-item" role="region" aria-label="Code: backend/app/main.py">
           <span class="cap">backend/app/main.py</span>
           <div class="code-block" style="font-size: 11px; line-height: 1.8;"><span class="keyword">def</span> create_app() -> FastAPI:
     app = FastAPI(
@@ -813,7 +890,7 @@
     app.include_router(ws_router)
     <span class="keyword">return</span> app</div>
         </div>
-        <div class="code-item">
+        <div class="code-item" role="region" aria-label="Code: frontend/src/lib/api.ts">
           <span class="cap">frontend/src/lib/api.ts</span>
           <div class="code-block" style="font-size: 11px; line-height: 1.8;"><span class="keyword">export const</span> authApi = {
   signup: (email, password, fullName?) =>
@@ -837,7 +914,7 @@
   listNodes: (params?, signal?) => ...,
 };</div>
         </div>
-        <div class="code-item">
+        <div class="code-item" role="region" aria-label="Code: frontend/src/lib/ws.ts">
           <span class="cap">frontend/src/lib/ws.ts</span>
           <div class="code-block" style="font-size: 11px; line-height: 1.8;"><span class="keyword">export class</span> WsClient {
   <span class="keyword">private</span> ws: WebSocket | <span class="keyword">null</span> = <span class="keyword">null</span>;
@@ -863,7 +940,7 @@
   }
 }</div>
         </div>
-        <div class="code-item">
+        <div class="code-item" role="region" aria-label="Code: src/crypto/encryption.ts">
           <span class="cap">src/crypto/encryption.ts</span>
           <div class="code-block" style="font-size: 11px; line-height: 1.8;"><span class="keyword">const</span> ALGORITHM = <span class="string">'aes-256-gcm'</span>;
 <span class="keyword">const</span> IV_LENGTH = <span class="string">16</span>;
@@ -885,7 +962,7 @@
   ].join(<span class="string">':'</span>);
 }</div>
         </div>
-        <div class="code-item">
+        <div class="code-item" role="region" aria-label="Code: backend/app/core/rate_limit.py">
           <span class="cap">backend/app/core/rate_limit.py</span>
           <div class="code-block" style="font-size: 11px; line-height: 1.8;">_storage = MemoryStorage()
 _strategy = MovingWindowRateLimiter(_storage)
@@ -907,7 +984,7 @@ _unauth_limit = RateLimitItemPerMinute(<span class="string">20</span>)
     <span class="keyword">if not</span> _strategy.hit(item, key):
         <span class="keyword">raise</span> HTTPException(<span class="string">429</span>)</div>
         </div>
-        <div class="code-item">
+        <div class="code-item" role="region" aria-label="Code: backend/app/core/quota.py">
           <span class="cap">backend/app/core/quota.py</span>
           <div class="code-block" style="font-size: 11px; line-height: 1.8;"><span class="keyword">async def</span> check_storage_quota(
     db: AsyncSession,
@@ -1152,7 +1229,7 @@ oasiswaker status</div>
       <div class="hero-cta">
         <a href="https://github.com/OasisBio/oasiswaker" class="btn btn-primary" target="_blank" rel="noopener">
           View Source on GitHub
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false">
             <path d="M1 7H13M13 7L7 1M13 7L7 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </a>
@@ -1168,7 +1245,7 @@ oasiswaker status</div>
     <div class="container">
       <div class="footer-left">
         <div class="logo-mark">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true" focusable="false">
             <path d="M1 8L5 2L9 11L13 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>

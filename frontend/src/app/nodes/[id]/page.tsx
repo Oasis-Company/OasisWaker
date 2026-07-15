@@ -1,49 +1,39 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { useParams } from "next/navigation";
+import React, { useState } from "react";
+import { useParams, useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
-import { api, type NodeRead } from "@/lib/api";
+import { ConfirmDialog } from "@/components/ui/ConfirmDialog";
+import { useFetch } from "@/lib/hooks/useFetch";
+import { api } from "@/lib/api";
 import { ArrowLeft, Trash2 } from "lucide-react";
 import Link from "next/link";
-
-function formatBytes(bytes: number): string {
-  if (bytes === 0) return "0 B";
-  const units = ["B", "KB", "MB", "GB", "TB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${units[i]}`;
-}
+import { formatBytes, formatDateTime } from "@/lib/format";
 
 export default function NodeDetailPage() {
   const params = useParams();
+  const router = useRouter();
   const nodeId = params.id as string;
-  const [node, setNode] = useState<NodeRead | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [deleting, setDeleting] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
-  useEffect(() => {
-    api
-      .getNode(nodeId)
-      .then(setNode)
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
-  }, [nodeId]);
+  const { data: node, isLoading, error: fetchError } = useFetch(
+    () => api.getNode(nodeId),
+    [nodeId]
+  );
 
   const handleDelete = async () => {
-    if (!window.confirm("Permanently remove this node?")) return;
     setDeleting(true);
     try {
       await api.deleteNode(nodeId);
-      window.location.href = "/nodes";
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed to delete node");
+      router.push("/nodes");
+    } catch {
       setDeleting(false);
     }
   };
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <p className="text-swiss-gray-400">Loading...</p>
@@ -51,12 +41,12 @@ export default function NodeDetailPage() {
     );
   }
 
-  if (error || !node) {
+  if (fetchError || !node) {
     return (
       <div className="card">
         <p className="text-swiss-red font-semibold">Error</p>
         <p className="text-caption text-swiss-gray-500 mt-sm">
-          {error ?? "Node not found"}
+          {fetchError ?? "Node not found"}
         </p>
         <Link href="/nodes" className="inline-block mt-md">
           <Button variant="secondary" size="sm">
@@ -94,13 +84,26 @@ export default function NodeDetailPage() {
         <Button
           variant="danger"
           size="sm"
-          onClick={handleDelete}
+          onClick={() => setShowConfirm(true)}
           disabled={deleting}
         >
           <Trash2 className="w-4 h-4 mr-sm" />
           {deleting ? "Deleting..." : "Delete"}
         </Button>
       </div>
+
+      {/* Delete confirmation dialog */}
+      <ConfirmDialog
+        isOpen={showConfirm}
+        title="Delete Node"
+        message="Permanently remove this node? This action cannot be undone."
+        confirmLabel="Delete"
+        cancelLabel="Cancel"
+        variant="danger"
+        isLoading={deleting}
+        onConfirm={handleDelete}
+        onCancel={() => setShowConfirm(false)}
+      />
 
       {/* Info Grid */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-md">
@@ -122,7 +125,7 @@ export default function NodeDetailPage() {
           </p>
           <p className="text-body-bold">
             {node.last_heartbeat
-              ? new Date(node.last_heartbeat).toLocaleString()
+              ? formatDateTime(node.last_heartbeat)
               : "Never"}
           </p>
         </div>
@@ -142,7 +145,7 @@ export default function NodeDetailPage() {
             {storageUsed}%
           </span>
         </div>
-        <p className="text-caption text-swiss-gray-500">
+        <p className="text-caption text-swiss-gray-500" style={{ fontVariantNumeric: 'tabular-nums' }}>
           {formatBytes(node.used_storage)} used of {formatBytes(node.total_storage)}
         </p>
       </div>

@@ -34,8 +34,8 @@ describe("Badge", () => {
     expect(screen.getByRole("status")).toBeInTheDocument();
   });
 
-  it("has aria-live=polite", () => {
+  it("has no tabIndex on non-interactive element", () => {
     render(<Badge>test</Badge>);
-    expect(screen.getByRole("status")).toHaveAttribute("aria-live", "polite");
+    expect(screen.getByRole("status")).not.toHaveAttribute("tabindex");
   });
 });

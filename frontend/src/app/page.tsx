@@ -38,7 +38,7 @@ export default function LandingPage() {
         <div className="max-w-6xl mx-auto px-lg py-4xl md:py-5xl">
           <div className="max-w-3xl">
             <div className="w-12 h-1 bg-swiss-red mb-xl" />
-            <h1 className="text-[56px] md:text-[72px] leading-[1.05] font-bold tracking-tight">
+            <h1 className="text-hero-stat md:text-hero tracking-tight">
               Crowdsourced
               <br />
               Edge Infrastructure

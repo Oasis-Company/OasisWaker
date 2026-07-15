@@ -1,32 +1,22 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/Badge";
 import { Table, type Column } from "@/components/ui/Table";
 import { Button } from "@/components/ui/Button";
+import { useFetch } from "@/lib/hooks/useFetch";
 import { api, type NodeRead } from "@/lib/api";
-
-function formatBytes(bytes: number): string {
-  if (bytes === 0) return "0 B";
-  const units = ["B", "KB", "MB", "GB", "TB"];
-  const i = Math.floor(Math.log(bytes) / Math.log(1024));
-  return `${(bytes / Math.pow(1024, i)).toFixed(1)} ${units[i]}`;
-}
+import { formatBytes, formatDateTime } from "@/lib/format";
 
 export default function NodesPage() {
   const router = useRouter();
-  const [nodes, setNodes] = useState<NodeRead[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data, isLoading, error } = useFetch(
+    (signal) => api.listNodes(undefined, signal),
+    []
+  );
 
-  useEffect(() => {
-    api
-      .listNodes()
-      .then((data) => setNodes(data.items))
-      .catch((e) => setError(e.message))
-      .finally(() => setLoading(false));
-  }, []);
+  const nodes = data?.items ?? [];
 
   const columns: Column<NodeRead>[] = [
     {
@@ -60,7 +50,7 @@ export default function NodesPage() {
     {
       key: "storage",
       header: "Storage",
-      render: (n) => `${formatBytes(n.used_storage)} / ${formatBytes(n.total_storage)}`,
+      render: (n) => <span style={{ fontVariantNumeric: 'tabular-nums' }}>{formatBytes(n.used_storage)} / {formatBytes(n.total_storage)}</span>,
     },
     {
       key: "version",
@@ -72,12 +62,12 @@ export default function NodesPage() {
       header: "Last Seen",
       render: (n) =>
         n.last_heartbeat
-          ? new Date(n.last_heartbeat).toLocaleString()
+          ? formatDateTime(n.last_heartbeat)
           : "Never",
     },
   ];
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <p className="text-swiss-gray-400">Loading nodes...</p>
